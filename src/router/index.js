@@ -13,9 +13,9 @@ function lazyLoadLayout(layout) {
     return () => import(`@/layouts/${layout}.vue`)
 }
 
-function lazyLoadPage(page) {
-    return () => import(`@/pages/${page}.vue`)
-}
+// function lazyLoadPage(page) {
+//     return () => import(`@/pages/${page}.vue`)
+// }
 
 const routers = [
     {
@@ -59,16 +59,16 @@ const routers = [
             }
         ]
     },
-    {
-        path: Path.Maintain,
-        name: RouterName.Maintain,
-        component: lazyLoadPage('MaintainPage')
-    },
-    {
-        path: Path.NoPermission,
-        name: RouterName.NoPermission,
-        component: lazyLoadPage('403Page')
-    },
+    // {
+    //     path: Path.Maintain,
+    //     name: RouterName.Maintain,
+    //     component: lazyLoadPage('MaintainPage')
+    // },
+    // {
+    //     path: Path.NoPermission,
+    //     name: RouterName.NoPermission,
+    //     component: lazyLoadPage('403Page')
+    // },
     {
         path: Path.VControl,
         name: RouterName.VControl,
