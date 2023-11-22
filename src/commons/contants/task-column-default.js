@@ -1,51 +1,64 @@
+import i18n from "@/plugins/i18n";
+var { t } = i18n.global;
+
 export const TaskColumnDefault = [
     {
-        DataField: "",
-        Caption: "",
-        DataType: "text",
-        Alignment: "center",
-        CellTemplate: "IndexTemplate",
-    },
-    {
       DataField: "TaskName",
-      Caption: "TaskName",
+      Caption: t('TaskName'),
       DataType: "text",
       Alignment: "left",
-    //   CellTemplate: "TaskNameTemplate",
+      Width:"300",
+      // CellTemplate: "TaskNameTemplate",
     },
     {
-    DataField: "KanbanName",
-    Caption: "KanbanName",
+    DataField: "ColumnName",
+    Caption: t("KanbanName"),
     DataType: "text",
     Alignment: "left",
     // CellTemplate: "KanbanNameTemplate",
     },
     {
-    DataField: "TaskStatus",
-    Caption: "TaskStatus",
+    DataField: "Process",
+    Caption: t("TaskStatus"),
     DataType: "text",
     Alignment: "left",
-    CellTemplate: "TaskStatusTemplate",
+    CellTemplate: "ProcessTemplate",
     },
     {
     DataField: "StartDate",
-    Caption: "StartDate",
+    Caption: t("StartDate"),
     DataType: "text",
     Alignment: "center",
     CellTemplate: "StartDateTemplate",
     },
     {
     DataField: "EndDate",
-    Caption: "EndDate",
+    Caption: t("EndDate"),
     DataType: "text",
     Alignment: "center",
     CellTemplate: "EndDateTemplate",
     },
+    // {
+    //   DataField: "EndDate",
+    //   Caption: "FinishDate",
+    //   DataType: "text",
+    //   Alignment: "center",
+    //   CellTemplate: "EndDateTemplate",
+    //   },
     {
         DataField: "AssigneeName",
-        Caption: "AssigneeName",
+        Caption: t("AssigneeName"),
         DataType: "text",
+        Width:"220",
         Alignment: "left",
-        CellTemplate: "AssigneeNameTemplate",
-    }
+        // CellTemplate: "AssigneeNameTemplate",
+    },
+    {
+      DataField: "AssigneeEmail",
+      Caption: t("AssigneeEmail"),
+      DataType: "text",
+      Width:"220",
+      Alignment: "left",
+      // CellTemplate: "AssigneeNameTemplate",
+  }
   ]

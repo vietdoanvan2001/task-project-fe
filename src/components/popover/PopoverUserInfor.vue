@@ -92,6 +92,7 @@
 <script setup>
 import BasePopover from "@/components/base/BasePopover.vue";
 import { LanguageOption } from "@/commons/contants/language-option.js";
+import { getAvatar } from "@/utils/functions/commonFns.js";
 import { ref } from "vue";
 import i18n from "@/plugins/i18n";
 var { t } = i18n.global;

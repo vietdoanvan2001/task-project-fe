@@ -13,10 +13,11 @@ import App from './App.vue'
 import router from './router'
 import i18n from './plugins/i18n';
 import mitt from 'mitt';
+import ToastPlugin from 'vue-toast-notification';
+import 'vue-toast-notification/dist/theme-bootstrap.css';
 
 import enMessages from 'devextreme/localization/messages/en.json'
 import viMessages from 'devextreme/localization/messages/vi.json'
-import BaseToast from "@/components/base/BaseToast.vue";
 
 import {locale, loadMessages} from 'devextreme/localization'
 
@@ -27,9 +28,10 @@ const emitter = mitt();
 const app = createApp(App)
 
 app.config.globalProperties.emitter = emitter;
-app.component("BaseToast",BaseToast)
+
 
 app.use(router)
 app.use(i18n)
+app.use(ToastPlugin);
 
 app.mount('#app')

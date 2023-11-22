@@ -73,6 +73,27 @@ export function getRandomColor(){
 }
 
 /**
+ * Lấy avatar
+ */
+export function getAvatar(user){
+  const background = getRandomColor();
+  if(user){
+    const name = user.fullName?.toUpperCase().trim().split(" ")
+    if(name.length > 1){
+      return {
+        Text: name[0][0]+name[name.length-1][0],
+        Background: background
+      }
+    }
+    return {
+      Text: name[0][0],
+      Background: background
+    }
+
+  }
+}
+
+/**
  * Lấy giờ hiện tại
  * @returns 
  */
@@ -93,7 +114,7 @@ export function getCurrentTime() {
 export function formatDate(inputDate) {
   const date = new Date(inputDate);
   
-  const day = date.getDate().toString().padStart(2, '0');
+  const day = (date.getDate()+1).toString().padStart(2, '0');
   const month = (date.getMonth() + 1).toString().padStart(2, '0');
   const year = date.getFullYear();
 
@@ -124,12 +145,11 @@ export function validateDate(endDate, finishDate){
     return DateStatus.NoProblem;
   }
   const differenceInDays = Math.floor((end - today) / oneDay);
-
-  if (differenceInDays < 0) {
+  if (differenceInDays < -1) {
     return DateStatus.OutOfDate;
-  } else if (differenceInDays === 0) {
+  } else if (differenceInDays === -1) {
     return DateStatus.ToDay;
-  } else if (differenceInDays <= 7) {
+  } else if (differenceInDays <= 6) {
     return DateStatus.DueSoon;
   } else {
     return DateStatus.NoProblem;

@@ -7,20 +7,43 @@
           {{ item.Name }}
         </div>
       </div>
+      <!-- <div class="mb-px-12 bold white-color pl-px-24">
+        {{ t("ListProject") }}
+      </div> -->
       <BaseSearchInput
-        class="mt-px-8"
+        class="mt-px-8 mb-px-12"
         :mode="'specialSearch'"
         :placeHolder="t('Search')"
+        @onValueChanged="searchProject"
       ></BaseSearchInput>
-      <div :style="{ color: '#ffffff', margin: '24px', cursor: 'pointer' }">
-        Dự án Fake
-      </div>
+
       <div
+        class="project-area"
+        v-for="(item, index) in listProjectClone"
+        :key="index"
+      >
+        <div class="project-item" @click="openTask(item.projectId)">
+          <div class="item-icon" :class="item.background">
+            <div :class="item.icon"></div>
+          </div>
+          <div class="item-text">
+            {{ item.projectName }}
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="italic-font white-color pl-px-24 pt-px-12"
+        v-if="!listProjectClone.length"
+      >
+        {{ t("NoneProject") }}
+      </div>
+      <!-- <div
         :style="{ color: '#ffffff', margin: '24px', cursor: 'pointer' }"
         @click="openTask(12, 2)"
       >
         Công việc Fake
-      </div>
+      </div> -->
     </div>
     <div class="content">
       <div class="quotations">
@@ -39,7 +62,7 @@
   </div>
 </template>
 <script setup>
-import { ref, onBeforeMount } from "vue";
+import { ref, onBeforeMount, watch } from "vue";
 import {
   getRandomFromArray,
   getCurrentTime,
@@ -49,37 +72,94 @@ import { RootSelection } from "@/commons/contants/root-selection.js";
 import router from "@/router/index.js";
 import BaseSearchInput from "@/components/base/BaseSearchInput.vue";
 import { RouterName } from "@/commons/contants/router-name.js";
+import { getAllProject } from "@/apis/project-service/project-service.js";
 import i18n from "@/plugins/i18n";
+import Project from "@/commons/models/Project";
+import { showToast } from "@/utils/toast-message/toastMessage";
+import { responseStatus } from "@/commons/enums/api-response-status";
 var { t } = i18n.global;
 
 const quotation = getRandomFromArray(Quotations);
 const currentTime = ref("");
 const emit = defineEmits();
+
+const props = defineProps({
+  reloadListProject: {
+    type: Boolean,
+  },
+});
+
+watch(
+  () => props.reloadListProject,
+  () => {
+    getProject();
+  }
+);
+
 onBeforeMount(() => {
   emit("onChangedView", RouterName.DashBoard);
   currentTime.value = getCurrentTime();
   setInterval(() => {
     currentTime.value = getCurrentTime();
   }, 1000);
+  getProject();
 });
+
+const listProject = ref(Array < Project > []);
+const listProjectClone = ref(Array < Project > []);
+
+/**
+ * Lọc dự án theo tên
+ * @param {*} keyWord
+ */
+function searchProject(keyWord) {
+  listProjectClone.value = [];
+  listProject.value?.forEach((element) => {
+    if (
+      element.projectName &&
+      element.projectName
+        .trim()
+        .toLowerCase()
+        .includes(keyWord.trim().toLowerCase())
+    ) {
+      listProjectClone.value.push(element);
+    }
+  });
+}
+
+/**
+ * Lấy dự án
+ */
+async function getProject() {
+  try {
+    const res = await getAllProject();
+    if (res && res.status && res.status == responseStatus.Success && res.data) {
+      listProject.value = res.data;
+      listProjectClone.value = [...listProject.value];
+    } else {
+      showToast.error(t("Error"));
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 /**
  * Mở Danh sách công việc
  * @param {*} taskID
  * @param {*} departmentID
  */
-function openTask(taskID, ProjectID) {
+function openTask(ProjectID) {
   router.push({
     path: "/project",
     query: {
-      Type: 2,
+      Type: 1,
       ProjectID: ProjectID,
-      TaskID: taskID,
     },
   });
 }
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 .dashboard-container {
   .menu {
     background-color: rgba(0, 0, 0, 0.7);
@@ -87,6 +167,38 @@ function openTask(taskID, ProjectID) {
     height: 100vh;
     position: absolute;
     padding-top: 72px;
+
+    .project-area {
+      padding: 0 24px;
+      cursor: pointer;
+      .project-item {
+        height: 42px;
+        display: flex;
+        align-items: center;
+        color: var(--app-color-white);
+
+        .item-icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 50%;
+          width: 24px;
+          height: 24px;
+          margin-right: 12px;
+        }
+
+        .item-text {
+          max-width: 184px;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        }
+      }
+    }
+
+    .project-area:hover {
+      background: #212121;
+    }
 
     .menu-item {
       display: flex;

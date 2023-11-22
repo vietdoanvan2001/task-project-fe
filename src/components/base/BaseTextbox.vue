@@ -22,7 +22,7 @@
 </template>
 <script setup>
 import DxTextBox from "devextreme-vue/text-box";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { keyCode } from "@/commons/enums/key-code.js";
 import {
   isSpecialCharacter,
@@ -61,8 +61,15 @@ const props = defineProps({
 });
 
 const emit = defineEmits();
-const textBox = ref();
-const textValue = !props.newInput ? ref(props.value) : ref("");
+let textBox = ref();
+const textValue = ref("");
+
+watch(
+  () => props.value,
+  () => {
+    textValue.value = props.value;
+  }
+);
 
 /**
  * Khởi tạo

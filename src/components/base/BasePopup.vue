@@ -8,6 +8,8 @@
       :min-width="minWidth"
       :min-height="minHeight"
       @hidden="onHidden"
+      @shown="onShown"
+      @contentReady="onContentReady($event)"
     >
       <!-- <slot name="header"></slot> -->
       <slot name="content"></slot>
@@ -47,6 +49,19 @@ const emit = defineEmits();
  */
 function onHidden() {
   emit("onHidden");
+}
+
+function onShown() {
+  emit("onShown");
+}
+
+/**
+ * Khởi tạo
+ */
+function onContentReady(event) {
+  if (event) {
+    emit("onContentReady");
+  }
 }
 </script>
 <style lang="scss">

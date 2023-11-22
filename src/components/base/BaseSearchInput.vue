@@ -13,6 +13,7 @@
       :height="height"
       :mode="mode"
       @valueChanged="onValueChange($event)"
+      @keyDown="onKeyDown($event)"
     >
     </DxTextBox>
   </div>
@@ -35,7 +36,7 @@ const props = defineProps({
     type: String,
   },
 });
-
+const textBox = ref();
 const emit = defineEmits();
 
 /**
@@ -45,6 +46,15 @@ const emit = defineEmits();
 function onValueChange(event) {
   if (event) {
     emit("onValueChanged", event.value);
+  }
+}
+
+/**
+ * key down
+ */
+function onKeyDown(event) {
+  if (event) {
+    // emit("onKeyDown", evnet.value);
   }
 }
 </script>
@@ -60,8 +70,9 @@ function onValueChange(event) {
 <style lang="scss">
 .special-search-input {
   .search-icon {
-    left: 24px;
+    right: 36px;
     top: 10px;
+    cursor: pointer;
   }
 
   .dx-editor-outlined {
@@ -70,7 +81,7 @@ function onValueChange(event) {
     background: inherit !important;
     border-radius: 0;
     margin: 0 24px;
-    padding-left: 20px;
+    padding-right: 24px;
   }
 
   .dx-texteditor-input {
