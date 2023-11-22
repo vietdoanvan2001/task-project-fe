@@ -283,6 +283,10 @@
     border: none;
 }
 
+.white-color{
+    color: var(--app-color-white);
+}
+
 .primary-color{
     color: var(--app-color-primary);
 }
@@ -297,6 +301,10 @@
 
 .hover-underline:hover{
     text-decoration: underline;
+}
+
+.italic-font{
+    font-style: italic;
 }
 
 .error-font{

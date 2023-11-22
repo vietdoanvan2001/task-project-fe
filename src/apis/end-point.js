@@ -1,4 +1,20 @@
 export const endPoint = {
     USERS: '/Users',
-    USERS_LOGIN: 'Users/Login'
+    USERS_LOGIN: 'Users/Login',
+    USERS_FILTER: 'Users/GetFilterUsers',
+    USERS_GETBYLISTID: '/Users/GetByListID',
+    USERS_GETBYID:'/Users/GetByID',
+    PROJECT: '/Projects',
+    PROJECT_UPDATE:'/Projects/UpdateByID',
+    PROJECT_DELETEBYID:'/Projects/deleteByIntID',
+    KANBAN:'/Kanbans',
+    KANBAN_GETBYPROJECTID:'/Kanbans/GetKanbanByProjectID',
+    KANBAN_DELETEBYID:'/Kanbans/deleteByIntID',
+    KANBAN_UPDATE:'/Kanbans/UpdateByID',
+    KANBAN_UPDATESORTORDER:'/Kanbans/UpdateSortOrder',
+    TASK:"/Tasks",
+    TASK_GETBYPROJECTID:'/Tasks/GetTaskByProjectID',
+    TASK_UPDATE:"/Tasks/UpdateByID",
+    TASK_UPDATEPROCESS:"/Tasks/UpdateProcess",
+    TASK_UPDATEKANBAN:'/Tasks/UpdateKanban'
   }

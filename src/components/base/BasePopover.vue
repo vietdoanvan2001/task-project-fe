@@ -7,6 +7,7 @@
       :visible="isVisible"
       :position="position"
       @hidden="onHidden"
+      @contentReady="onContentReady"
     >
       <slot name="header"></slot>
       <slot name="content"></slot>
@@ -43,6 +44,13 @@ const emit = defineEmits();
  */
 function onHidden() {
   emit("onHidden");
+}
+
+/**
+ * Khởi tạo
+ */
+function onContentReady() {
+  emit("onContentReady");
 }
 </script>
 <style lang="scss"></style>

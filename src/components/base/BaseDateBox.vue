@@ -1,5 +1,5 @@
 <template lang="">
-  <div>
+  <div :class="errorMessage ? 'error' : ''">
     <DxDateBox
       class="base-date-box"
       :placeholder="placeholder"
@@ -7,13 +7,20 @@
       :height="height"
       display-format="dd/MM/yyyy"
       :use-mask-behavior="true"
+      :value="dateValue"
       type="date"
       @valueChanged="onValueChange($event)"
+      @focusIn="onFocusIn($event)"
+      @focusOut="onFocusOut($event)"
+      @contentReady="onContentReady($event)"
     />
+    <div class="mt-px-4 error-color error-font" v-if="errorMessage">
+      {{ fieldName + " " + errorMessage }}
+    </div>
   </div>
 </template>
 <script setup>
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import DxDateBox from "devextreme-vue/date-box";
 
 const props = defineProps({
@@ -26,9 +33,24 @@ const props = defineProps({
   height: {
     type: Number,
   },
+  errorMessage: {
+    type: String,
+  },
+  fieldName: {
+    type: String,
+  },
+  value: String,
 });
 
 const emit = defineEmits();
+const dateValue = ref();
+
+watch(
+  () => props.value,
+  () => {
+    dateValue.value = new Date(props.value);
+  }
+);
 
 /**
  * Đổi giá trị
@@ -37,6 +59,36 @@ const emit = defineEmits();
 function onValueChange(event) {
   if (event && event.value) {
     emit("onValueChanged", event.value);
+  }
+}
+
+/**
+ * focus in
+ * @param {*} event
+ */
+function onFocusIn(event) {
+  if (event) {
+    emit("onFocusIn");
+  }
+}
+
+/**
+ * focus out
+ * @param {*} event
+ */
+function onFocusOut(event) {
+  if (event) {
+    emit("onFocusOut");
+  }
+}
+
+/**
+ * Khởi tạo
+ * @param {*} event
+ */
+function onContentReady(event) {
+  if (event) {
+    emit("onContentReady");
   }
 }
 </script>

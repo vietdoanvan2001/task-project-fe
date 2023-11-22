@@ -131,6 +131,7 @@ import ToastData from "@/commons/models/ToastData";
 import { ToastType } from "@/commons/contants/toast-type.js";
 import eventBus from "@/utils/event-bus/event-bus.js";
 import ServiceError from "@/commons/models/ServiceError.js";
+import { showToast } from "@/utils/toast-message/toastMessage";
 import {
   isEmailValid,
   containsOnlyNumbers,
@@ -220,17 +221,10 @@ async function onRegister() {
   try {
     const res = await addNewUser(userData.value);
     if (res && res.status && res.status == responseStatus.InsertSuccess) {
-      emit(
-        "showToastMessage",
-        new ToastData(true, ToastType.Success, t("RegisterSuccess"))
-      );
+      showToast.success(t("RegisterSuccess"));
       onLogin();
     } else {
-      console.log(res);
-      emit(
-        "showToastMessage",
-        new ToastData(true, ToastType.Error, t("RegisterFalse"))
-      );
+      showToast.error(t("RegisterFalse"));
     }
   } catch (error) {
     console.log(error);
@@ -242,10 +236,7 @@ async function onRegister() {
     ) {
       serviceError.value = error.response.data;
     } else {
-      emit(
-        "showToastMessage",
-        new ToastData(true, ToastType.Error, t("RegisterFalse"))
-      );
+      showToast.error(t("RegisterFalse"));
     }
   }
 }

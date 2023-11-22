@@ -5,6 +5,7 @@
       :value="value"
       :value-expr="valueExpr"
       :display-expr="displayExpr"
+      @valueChanged="onValueChanged($event)"
     />
   </div>
 </template>
@@ -17,6 +18,18 @@ const props = defineProps({
   valueExpr: String,
   displayExpr: String,
 });
+
+const emit = defineEmits();
+
+/**
+ * Đổi lựa chọn
+ * @param {*} event
+ */
+function onValueChanged(event) {
+  if (event && event.value) {
+    emit("onValueChange", event.value);
+  }
+}
 </script>
 <style lang="scss">
 .dx-collection {

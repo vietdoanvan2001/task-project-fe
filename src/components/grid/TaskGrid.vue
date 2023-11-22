@@ -3,8 +3,18 @@
     <div class="table-header"></div>
     <div class="table-content">
       <BaseDataGrid :dataSource="listTask" :columns="TaskColumnDefault">
+        <template v-slot:StartDateTemplate="{ data }">
+          <div>{{ formatDate(data.data.StartDate) }}</div>
+        </template>
         <template v-slot:EndDateTemplate="{ data }">
-          <div>{{ data.data.EndDate }}</div>
+          <div>{{ formatDate(data.data.EndDate) }}</div>
+        </template>
+        <template v-slot:ProcessTemplate="{ data }">
+          <div v-if="data.data.Process == 0">{{ t("TaskDoing") }}</div>
+          <div v-else-if="data.data.Process < 100">
+            {{ t("Done") }} {{ data.data.Process }}%
+          </div>
+          <div v-else>{{ t("DoneJob") }}</div>
         </template>
       </BaseDataGrid>
     </div>
@@ -14,6 +24,7 @@
 import { onBeforeMount, ref, watch } from "vue";
 import BaseDataGrid from "@/components/base/BaseDataGrid.vue";
 import { TaskColumnDefault } from "@/commons/contants/task-column-default.js";
+import { formatDate } from "@/utils/functions/commonFns";
 import i18n from "@/plugins/i18n";
 var { t } = i18n.global;
 const props = defineProps({
@@ -21,18 +32,17 @@ const props = defineProps({
 });
 const emit = defineEmits();
 const listTask = ref([]);
-onBeforeMount(() => {
-  if (props.data && props.data.length) {
-    props.data.forEach((element) => {
-      if (element.Tasks && element.Tasks.length) {
-        element.Tasks.forEach((item) => {
-          listTask.value.push(item);
-        });
-      }
-    });
+onBeforeMount(() => {});
+
+watch(
+  () => props.data,
+  () => {
+    if (props.data && props.data.length) {
+      listTask.value = [...props.data];
+    }
+    console.log(listTask.value);
   }
-  console.log(listTask.value);
-});
+);
 </script>
 <style lang="scss" scoped>
 .table-container {

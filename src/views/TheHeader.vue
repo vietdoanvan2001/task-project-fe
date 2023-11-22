@@ -8,12 +8,49 @@
       <div class="app-name">{{ t("Task") }}</div>
     </div>
     <div class="d-flex align-items-center" v-if="view == RouterName.TheProject">
-      <div class="home-icon ml-px-40 mr-px-24 pointer"></div>
+      <div
+        class="home-icon ml-px-40 mr-px-24 pointer"
+        @click="backToHome"
+      ></div>
       <div class="project-infor">
-        <div class="icon-project"></div>
-        <div class="project-name">Công việc cá nhân</div>
-        <div class="arrow-down-icon"></div>
-        <div class="setting-icon ml-px-24 mr-px-8"></div>
+        <PopoverChoseProject
+          :width="300"
+          :target="'theHeader'"
+          :maxWidthText="120"
+          :dataSource="listProject"
+          :selectedItem="selectedProject"
+          @onSelectedItem="onSelectedProject"
+        ></PopoverChoseProject>
+        <div
+          class="setting-icon ml-px-24 mr-px-8 pointer"
+          id="projectSetting"
+          @click="showProjectSettingSelection"
+        ></div>
+        <BasePopover
+          v-if="isShowProjectSetting"
+          :isVisible="isShowProjectSetting"
+          :target="'projectSetting'"
+          :width="280"
+          @onHidden="
+            () => {
+              isShowProjectSetting = false;
+            }
+          "
+        >
+          <template v-slot:content>
+            <div class="setting-selection">
+              <div
+                class="setting-item"
+                v-for="(item, index) in settingSelection"
+                :key="index"
+                @click="onSelectSettingItem(item)"
+              >
+                <div :class="item.Icon" class="mr-px-12"></div>
+                {{ item.Text }}
+              </div>
+            </div>
+          </template>
+        </BasePopover>
       </div>
       <div v-for="(item, index) in TheProjectTab" :key="index">
         <div
@@ -30,7 +67,7 @@
         class="add-button mr-px-32"
         :type="ButtonType.AddButton"
         :text="t('AddNewTask')"
-        @itemSelected="onOpenAddNewProject"
+        @itemSelected="onOpenAddNewProject(methodStatus.Add)"
         @onClick="onOpenAddNewTask"
       ></BaseButton>
 
@@ -44,21 +81,152 @@ import { ButtonType } from "@/commons/contants/button-type";
 import BaseButton from "@/components/base/BaseButton.vue";
 import { RouterName } from "@/commons/contants/router-name.js";
 import { TheProjectTab } from "@/commons/contants/the-project-tab.js";
+import BasePopover from "@/components/base/BasePopover.vue";
+import { useRoute } from "vue-router";
+import {
+  getAllProject,
+  deleteProjectByID,
+} from "@/apis/project-service/project-service";
+import { showToast } from "@/utils/toast-message/toastMessage";
+import PopoverChoseProject from "@/components/popover/PopoverChoseProject.vue";
 import router from "@/router/index.js";
-import { ref, watch } from "vue";
+import { onBeforeMount, ref, watch } from "vue";
 import i18n from "@/plugins/i18n";
+import Project from "@/commons/models/Project";
+import { responseStatus } from "@/commons/enums/api-response-status";
+import { methodStatus } from "@/commons/contants/method-status.js";
 var { t } = i18n.global;
 const props = defineProps({
   view: String,
+  reloadListProject: Boolean,
 });
 const emit = defineEmits();
-const selectedTab = ref(2);
+const selectedTab = ref(1);
+const listProject = ref(Array < Project > []);
+const selectedProject = ref(Array);
+const route = useRoute();
+const isShowProjectSetting = ref(false);
+const settingSelection = [
+  {
+    ID: 0,
+    Text: t("UpdateProject"),
+    Icon: "pencil-icon",
+  },
+  {
+    ID: 1,
+    Text: t("DeleteProject"),
+    Icon: "trash-icon",
+  },
+];
+
+onBeforeMount(async () => {
+  await getProject();
+  if (route.query && route.query.ProjectID) {
+    const temp = listProject.value?.find(
+      (item) => item.projectId == route.query.ProjectID
+    );
+    if (temp) {
+      selectedProject.value = temp;
+    } else {
+      selectedProject.value = listProject.value[0];
+    }
+  } else {
+    selectedProject.value = listProject.value[0];
+  }
+});
+
+watch(
+  () => route.query,
+  async () => {
+    await getProject();
+    if (route.query && route.query.ProjectID) {
+      const temp = listProject.value?.find(
+        (item) => item.projectId == route.query.ProjectID
+      );
+      if (temp) {
+        selectedProject.value = temp;
+      } else {
+        selectedProject.value = listProject.value[0];
+      }
+    } else {
+      selectedProject.value = listProject.value[0];
+    }
+  }
+);
+
+watch(
+  () => props.reloadListProject,
+  async () => {
+    await getProject();
+    if (route.query && route.query.ProjectID) {
+      const temp = listProject.value?.find(
+        (item) => item.projectId == route.query.ProjectID
+      );
+      if (temp) {
+        selectedProject.value = temp;
+      } else {
+        selectedProject.value = listProject.value[0];
+      }
+    } else {
+      selectedProject.value = listProject.value[0];
+    }
+  }
+);
+
+/**
+ * Chọn setting project item
+ * @param {*} item
+ */
+async function onSelectSettingItem(item) {
+  if (item.ID == 0) {
+    onOpenAddNewProject(methodStatus.Update);
+  } else {
+    try {
+      const res = await deleteProjectByID(selectedProject.value.projectId);
+      console.log(res);
+      if (res && res.status && res.status == responseStatus.Success) {
+        showToast.success(t("DeleteProjectSuccess"));
+        backToHome();
+      } else {
+        showToast.error(t("Error"));
+      }
+    } catch (error) {
+      console.log(error);
+      showToast.error(t("Error"));
+    }
+  }
+  isShowProjectSetting.value = false;
+}
+
+/**
+ * Hiển thị chọn cài đặt project
+ */
+function showProjectSettingSelection() {
+  isShowProjectSetting.value = true;
+}
+
+/**
+ * Lấy toàn bộ phòng ban
+ */
+async function getProject() {
+  try {
+    const res = await getAllProject();
+    if (res && res.status && res.status == responseStatus.Success && res.data) {
+      listProject.value = res.data;
+    } else {
+      showToast.error(t("Error"));
+    }
+  } catch (error) {
+    console.log(error);
+    showToast.error(t("Error"));
+  }
+}
 
 /**
  * Mở popup thêm dự án/nhóm
  */
-function onOpenAddNewProject() {
-  emit("onOpenAddNewProject");
+function onOpenAddNewProject(method) {
+  emit("onOpenAddNewProject", method);
 }
 
 /**
@@ -66,6 +234,19 @@ function onOpenAddNewProject() {
  */
 function onOpenAddNewTask() {
   emit("onOpenAddNewTask");
+}
+
+/**
+ * Chọn dự án
+ */
+function onSelectedProject(event) {
+  router.push({
+    path: "/project",
+    query: {
+      Type: selectedTab.value,
+      ProjectID: event.projectId,
+    },
+  });
 }
 
 /**
@@ -80,9 +261,15 @@ function selectTab(item) {
     query: {
       Type: selectedTab.value,
       ProjectID: query.ProjectID,
-      TaskID: query.TaskID,
     },
   });
+}
+
+/**
+ * Về trang chủ
+ */
+function backToHome() {
+  router.push("/management");
 }
 </script>
 <style lang="scss" scoped>
@@ -130,6 +317,19 @@ function selectTab(item) {
     color: #2196f3;
     border-bottom: 3px solid #2196f3;
     font-weight: 600;
+  }
+}
+
+.setting-selection {
+  .setting-item {
+    height: 36px;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    cursor: pointer;
+  }
+  .setting-item:hover {
+    background-color: var(--app-items-hover);
   }
 }
 </style>
