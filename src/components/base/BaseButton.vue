@@ -213,5 +213,6 @@ function selectItem() {
 <style lang="scss">
 .dx-popup-content {
   padding: 4px 0 !important;
+  height: auto !important;
 }
 </style>

@@ -34,6 +34,17 @@ $icon-project: url('../images/icon_project.svg');
     #ffffff
 );
 
+//add primary color icon
+@include setIconWithCustomColor(
+    primary-add-icon,
+    14px,
+    14px,
+    -170px,
+    -106px,
+    $link-icon-v1,
+    var(--app-color-primary)
+);
+
 //add member color icon
 @include setIconWithCustomColor(
     add-member-icon,
@@ -65,6 +76,27 @@ $icon-project: url('../images/icon_project.svg');
     -805px,
     $link-icon-v1,
     #ffffff
+);
+
+//back icon
+@include setIconWithDefaultColor(
+    back-icon,
+    9px,
+    15px,
+    -492px,
+    -329px,
+    $link-icon-v1,
+    180deg
+);
+
+//next icon
+@include setIconWithDefaultColor(
+    next-icon,
+    9px,
+    15px,
+    -492px,
+    -329px,
+    $link-icon-v1
 );
 
 //back primary color icon
@@ -235,6 +267,36 @@ $icon-project: url('../images/icon_project.svg');
     $link-icon-v2
 );
 
+//delete icon
+@include setIconWithDefaultColor(
+    delete-icon,
+    13px,
+    12px,
+    -361px,
+     -106px,
+    $link-icon-v1
+);
+
+//icon thùng rác
+@include setIconWithCustomColor(
+    trash-icon,
+    20px,
+    20px,
+    -518px,
+    -358px,
+    $link-icon-v1,
+    var(--app-color-secondary-text)
+);
+
+//Icon bút chì
+@include setIconWithDefaultColor(
+    pencil-icon,
+    17px,
+    16px,
+    -680px,
+    -360px,
+    $link-icon-v1
+);
 
 //user setting icon
 @include setIconWithDefaultColor(

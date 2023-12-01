@@ -79,6 +79,7 @@ import ToastData from "@/commons/models/ToastData";
 import { ToastType } from "@/commons/contants/toast-type.js";
 import { onLogin } from "@/apis/user-service/user-service.js";
 import Account from "@/commons/models/Account.js";
+import { showToast } from "@/utils/toast-message/toastMessage";
 import router from "../router";
 import i18n from "@/plugins/i18n";
 var { t } = i18n.global;
@@ -133,10 +134,7 @@ async function onClickLogin() {
   try {
     const res = await onLogin(acc.value);
     if (res && res.status && res.status == responseStatus.Success) {
-      emit(
-        "showToastMessage",
-        new ToastData(true, ToastType.Success, t("LoginSuccess"))
-      );
+      showToast.success(t("LoginSuccess"));
       router.push("/management");
     } else {
       showErrorArea.value = true;
