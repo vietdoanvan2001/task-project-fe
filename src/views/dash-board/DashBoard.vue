@@ -2,7 +2,7 @@
   <div class="dashboard-container d-flex">
     <div class="menu">
       <div v-for="(item, index) in RootSelection" :key="index">
-        <div class="menu-item pointer">
+        <div class="menu-item pointer" @click="onSelectTab(item)">
           <div :class="item.Icon" class="mr-px-16"></div>
           {{ item.Name }}
         </div>
@@ -22,12 +22,12 @@
         v-for="(item, index) in listProjectClone"
         :key="index"
       >
-        <div class="project-item" @click="openTask(item.projectId)">
-          <div class="item-icon" :class="item.background">
-            <div :class="item.icon"></div>
+        <div class="project-item" @click="openTask(item.ProjectID)">
+          <div class="item-icon" :class="item.Background">
+            <div :class="item.Icon"></div>
           </div>
           <div class="item-text">
-            {{ item.projectName }}
+            {{ item.ProjectName }}
           </div>
         </div>
       </div>
@@ -72,11 +72,12 @@ import { RootSelection } from "@/commons/contants/root-selection.js";
 import router from "@/router/index.js";
 import BaseSearchInput from "@/components/base/BaseSearchInput.vue";
 import { RouterName } from "@/commons/contants/router-name.js";
-import { getAllProject } from "@/apis/project-service/project-service.js";
+import { getProjectByUserID } from "@/apis/project-service/project-service.js";
 import i18n from "@/plugins/i18n";
 import Project from "@/commons/models/Project";
 import { showToast } from "@/utils/toast-message/toastMessage";
 import { responseStatus } from "@/commons/enums/api-response-status";
+import { useRoute } from "vue-router";
 var { t } = i18n.global;
 
 const quotation = getRandomFromArray(Quotations);
@@ -104,9 +105,17 @@ onBeforeMount(() => {
   }, 1000);
   getProject();
 });
-
+const route = useRoute();
 const listProject = ref(Array < Project > []);
 const listProjectClone = ref(Array < Project > []);
+
+/**
+ * Chọn tab
+ * @param {*} item
+ */
+function onSelectTab(item) {
+  router.push(item.Root);
+}
 
 /**
  * Lọc dự án theo tên
@@ -132,7 +141,9 @@ function searchProject(keyWord) {
  */
 async function getProject() {
   try {
-    const res = await getAllProject();
+    // const res = await getAllProject();
+    const id = localStorage.getItem("currentUserID");
+    const res = await getProjectByUserID(id);
     if (res && res.status && res.status == responseStatus.Success && res.data) {
       listProject.value = res.data;
       listProjectClone.value = [...listProject.value];

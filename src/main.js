@@ -6,7 +6,7 @@
 // Cấu hình CSS cho giao diện ứng dụng
 import 'devextreme/dist/css/dx.common.css';
 import 'devextreme/dist/css/dx.light.css';
-
+import store from './store/vuex';
 import '@/assets/main.scss'
 import { createApp } from 'vue'
 import App from './App.vue'
@@ -29,7 +29,7 @@ const app = createApp(App)
 
 app.config.globalProperties.emitter = emitter;
 
-
+app.use(store)
 app.use(router)
 app.use(i18n)
 app.use(ToastPlugin);

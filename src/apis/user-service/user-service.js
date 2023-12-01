@@ -12,6 +12,11 @@ export async function getAllUsers(){
     return await axios.getAxios(endpoint);
 }
 
+export async function getListUsersInTrash(){
+    const endpoint = endPoint.USERS_GETINTRASH;
+    return await axios.getAxios(endpoint);
+}
+
 export async function getUserById(id){
     const endpoint = endPoint.USERS_GETBYID+"/"+id
     return await axios.getAxios(endpoint)
@@ -47,6 +52,59 @@ export async function getUsersByListID(listID){
     return await axios.postAxios(endpoint,param)
 }
 
+export async function updateStatusByListID(listID, status){
+    let IDs = "(";
+    for(let i = 0; i< listID.length;i++){
+        if(i<listID.length-1){
+            IDs = IDs + "'" + listID[i] + "',"
+        }
+        else{
+            IDs = IDs + "'" + listID[i] + "')"
+        }
+    }
+    const param = {
+        listID:IDs,
+        status: status
+    }
+    const endpoint = endPoint.USERS_UPDATESTATUS
+    return await axios.postAxios(endpoint,param)
+}
+
+export async function deleteByListID(listID){
+    let IDs = "(";
+    for(let i = 0; i< listID.length;i++){
+        if(i<listID.length-1){
+            IDs = IDs + "'" + listID[i] + "',"
+        }
+        else{
+            IDs = IDs + "'" + listID[i] + "')"
+        }
+    }
+    const param = {
+        listID:IDs
+    }
+    const endpoint = endPoint.USERS_MULTIPLEDELETE
+    return await axios.postAxios(endpoint,param)
+}
+
+export async function addToTrash(listID,status){
+    let IDs = "(";
+    for(let i = 0; i< listID.length;i++){
+        if(i<listID.length-1){
+            IDs = IDs + "'" + listID[i] + "',"
+        }
+        else{
+            IDs = IDs + "'" + listID[i] + "')"
+        }
+    }
+    const param = {
+        listID:IDs,
+        status: status
+    }
+    const endpoint = endPoint.USERS_ADDTOTRASH
+    return await axios.postAxios(endpoint,param)
+}
+
 /**
  * Hàm call API thêm mới thông tin nhân viên
  * @param {employee} body 
@@ -55,6 +113,16 @@ export async function getUsersByListID(listID){
  export async function addNewUser(body){
     const endpoint = endPoint.USERS;
     return await axios.postAxios(endpoint,body)
+}
+
+export async function updateUserPass(body){
+    const endpoint = endPoint.USER_UPDATEPASS;
+    return await axios.postAxios(endpoint,body)
+}
+
+export async function updateUserInfor(id,body) {
+    const endpoint = endPoint.USERS+"/"+id;
+    return await axios.putAxios(endpoint,body)
 }
 
 /**

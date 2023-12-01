@@ -17,6 +17,11 @@ export async function getProjectByID(id) {
     return await axios.getAxios(endpoint)
 }
 
+export async function getProjectByUserID(id){
+    const endpoint = endPoint.PROJECT_GETBYUSERID+"/"+id
+    return await axios.getAxios(endpoint)
+}
+
 //Post API
 
 /**

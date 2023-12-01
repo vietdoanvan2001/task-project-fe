@@ -155,6 +155,7 @@ function confirmProcess() {
   align-items: center;
   max-width: 170px;
   height: 36px;
+  background: var(--app-color-white);
   border: 1px solid #ccc;
   border-radius: 8px;
 

@@ -58,7 +58,9 @@ watch(
  */
 function onValueChange(event) {
   if (event && event.value) {
-    emit("onValueChanged", event.value);
+    const date = new Date(event.value);
+    date.setHours(12);
+    emit("onValueChanged", date);
   }
 }
 

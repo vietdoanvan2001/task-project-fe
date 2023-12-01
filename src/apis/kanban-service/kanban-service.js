@@ -7,9 +7,9 @@ import {endPoint} from '@/apis/end-point.js';
  * Hàm call api lấy toàn bộ danh sách nhân viên
  * @returns danh sách nhân viên
  */
-export async function getKanbanByProjectID(id){
-    const endpoint = endPoint.KANBAN_GETBYPROJECTID+'/'+id;
-    return await axios.getAxios(endpoint);
+export async function getKanbanByProjectID(param){
+    const endpoint = endPoint.KANBAN_GETBYPROJECTID;
+    return await axios.getAxios(endpoint,param);
 }
 
 export async function insertKanban(body){

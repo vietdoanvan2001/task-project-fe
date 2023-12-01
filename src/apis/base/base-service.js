@@ -1,5 +1,7 @@
 import axios from "axios";
 
+axios.defaults.headers.common['Authorization'] = 'Bearer '+ localStorage.getItem('token')
+
 const HTTP = axios.create({
     baseURL:'https://localhost:44304/api/v1/',
     headers: {"Content-Type": "application/json"}

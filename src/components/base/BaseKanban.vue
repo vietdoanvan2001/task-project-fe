@@ -16,6 +16,7 @@
             <div
               class="list-title dx-theme-text-color"
               v-if="!list?.ShowInput"
+              :title="list?.ColumnName"
               :style="{ background: list?.HeaderColor }"
             >
               <div
@@ -28,6 +29,7 @@
               >
                 {{ list?.ColumnName }}
               </div>
+
               <div
                 class="d-flex center-center pointer"
                 :style="{ width: '24px', height: '24px' }"
@@ -73,6 +75,7 @@
                   :key="index"
                   class="card dx-card dx-theme-text-color dx-theme-background-color"
                   @click="onSelectTask(task)"
+                  @ondrag="onSelectedTask(task)"
                 >
                   <div
                     class="card-header"
@@ -88,7 +91,7 @@
                     "
                     v-if="
                       DateStatus.NoProblem !=
-                      validateDate(task.EndDate, task.FinishDate)
+                      validateDate(task?.EndDate, task?.FinishDate)
                     "
                   >
                     <div
@@ -96,7 +99,7 @@
                       :class="
                         task?.Process == 100
                           ? 'done-date-icon'
-                          : validateDate(task.EndDate, task.FinishDate).Icon
+                          : validateDate(task?.EndDate, task?.FinishDate).Icon
                       "
                     ></div>
                     <div
@@ -105,24 +108,39 @@
                         task?.Process == 100
                           ? { color: 'var(--app-color-success)' }
                           : {
-                              color: validateDate(task.EndDate, task.FinishDate)
-                                .Color,
+                              color: validateDate(
+                                task?.EndDate,
+                                task?.FinishDate
+                              ).Color,
                             }
                       "
                     >
                       {{
                         task?.Process == 100
                           ? t("Done")
-                          : validateDate(task.EndDate, task.FinishDate).Name
+                          : validateDate(task?.EndDate, task?.FinishDate).Name
                       }}
                     </div>
                   </div>
                   <div class="card-content">
+                    <div :style="{ opacity: 0, height: 0 }">
+                      id-{{ task?.TaskID }}
+                    </div>
                     <div class="pb-px-16">
-                      {{ task.TaskName }}
+                      {{ task?.TaskName }}
                     </div>
                     <div class="d-flex align-items-center pt-px-8">
-                      <div class="task-assignee assignee-icon"></div>
+                      <div
+                        class="task-assignee assignee-icon"
+                        v-if="!task?.AssigneeName"
+                      ></div>
+                      <div
+                        class="task-assignee bold"
+                        :style="{ background: task?.Background }"
+                        v-else
+                      >
+                        {{ getName(task?.AssigneeName) }}
+                      </div>
                       <div class="task-deadline">
                         <div
                           class="mr-px-8"
@@ -137,32 +155,33 @@
                           v-else
                           class="mr-px-8"
                           :class="
-                            task.EndDate
-                              ? validateDate(task.EndDate, task.FinishDate).Icon
+                            task?.EndDate
+                              ? validateDate(task?.EndDate, task?.FinishDate)
+                                  .Icon
                               : 'celendar-default-icon'
                           "
                         ></div>
                         <div
-                          v-if="task.EndDate"
+                          v-if="task?.EndDate"
                           class="bold"
                           :style="{
                             color:
                               task?.Process == 100
                                 ? 'var(--app-color-success)'
-                                : validateDate(task.EndDate, task.FinishDate)
+                                : validateDate(task?.EndDate, task?.FinishDate)
                                     .Color,
                           }"
                         >
-                          {{ formatDate(task.EndDate) }}
+                          {{ formatDate(task?.EndDate) }}
                         </div>
                       </div>
                     </div>
                     <div
                       class="d-flex align-items-center mt-px-12"
-                      v-if="task.Process"
+                      v-if="task?.Process"
                     >
                       <div class="task-completion-icon mr-px-8 ml-px-2"></div>
-                      {{ task.Process }}
+                      {{ task?.Process }}
                     </div>
                   </div>
                 </div>
@@ -270,7 +289,9 @@ watch(
   () => props.data,
   () => {
     data.value = [...props.data];
-  }
+  },
+  { immediate: true },
+  { deep: true }
 );
 
 /**
@@ -297,7 +318,6 @@ function openKanbanSetting(index) {
 async function deleteKanban() {
   const arr = idKanban.value?.split("-");
   const index = arr[arr.length - 1];
-  console.log(data.value[index]);
   try {
     const res = await deleteKanbanByIntID(data.value[index].KanbanID);
     if (res && res.status && res.status == responseStatus.Success) {
@@ -347,7 +367,6 @@ async function addNewColumn(event) {
 async function saveColumnName(listIndex, newName) {
   if (!isNullOrEmpty(newName)) {
     data.value[listIndex].ColumnName = newName;
-    console.log(data.value[listIndex]);
     try {
       const res = await updateKanbanByID(
         data.value[listIndex].KanbanID,
@@ -392,12 +411,16 @@ async function onListReorder(e) {
   }
 }
 
+function onSelectedTask(task) {
+  console.log(task);
+}
+
 /**
  * Kéo công việc
  * @param {*} e
  */
 function onTaskDragStart(e) {
-  e.itemData = e?.fromData?.Tasks[e.fromIndex];
+  // e.itemData = e?.fromData?.Tasks[e.fromIndex];
 }
 
 /**
@@ -405,18 +428,20 @@ function onTaskDragStart(e) {
  * @param {*} e
  */
 async function onTaskDrop(e) {
-  if (e.fromData && e.toData && e.fromData != e.toData) {
-    console.log(e);
-    console.log(e.fromData.KanbanID);
-    console.log(e.toData.KanbanID);
+  const a = e.itemElement.innerText.split("\n");
+  const b = a.find((item) => item.includes("id-"));
+  const array = b.split("-");
+  const id = array[1];
+  if (e.fromData && e.toData && e.fromData != e.toData && id) {
     try {
       const param = {
-        TaskID: e.itemData.TaskID,
+        TaskID: id,
         Process: e.toData.KanbanID,
       };
       const res = await updateTaskKanban(param);
       if (res && res.status && res.status == responseStatus.Success) {
         showToast.success(t("UpdateTaskSuccess"));
+        // emit("reloadData");
       } else {
         showToast.error(t("Error"));
       }
@@ -425,8 +450,20 @@ async function onTaskDrop(e) {
       showToast.error(t("Error"));
     }
   }
+
+  const temp = e?.fromData?.Tasks[e.fromIndex];
   e?.fromData?.Tasks?.splice(e.fromIndex, 1);
-  e?.toData?.Tasks?.splice(e.toIndex, 0, e.itemData);
+  e?.toData?.Tasks?.splice(e.toIndex, 0, temp);
+}
+
+function getName(string) {
+  if (string && !isNullOrEmpty(string)) {
+    const arr = string.toUpperCase().trim().split(" ");
+    if (arr.length > 1) {
+      return arr[0][0] + arr[arr.length - 1][0];
+    }
+    return arr[0][0];
+  }
 }
 </script>
 <style lang="scss" scoped>

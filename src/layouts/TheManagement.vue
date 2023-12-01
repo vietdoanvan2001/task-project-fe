@@ -1,6 +1,7 @@
 <template>
   <TheHeader
     :view="view"
+    :user="currentUser"
     :reloadListProject="reloadListProject"
     @onOpenAddNewProject="onOpenAddProject"
     @onOpenAddNewTask="onOpenPopupAddNewTask"
@@ -25,14 +26,29 @@
     @saveNewTaskSuccess="reloadData"
     @onHiddenPopup="closePopupAddNewTask"
   ></PopupAddNewJob>
+  <PopupDetailTask
+    :isVisible="isShowDetailPopup"
+    :taskSelectedID="taskSelectedID"
+    @reloadData="reloadData"
+    @closePopup="
+      () => {
+        isShowDetailPopup = false;
+        taskSelectedID = '';
+      }
+    "
+  ></PopupDetailTask>
 </template>
 <script setup>
 import TheHeader from "@/views/TheHeader.vue";
 import PopupAddProject from "@/components/popup/PopupAddProject.vue";
 import PopupAddNewJob from "@/components/popup/PopupAddNewJob.vue";
-import { ref } from "vue";
+import { onBeforeMount, ref } from "vue";
 import { methodStatus } from "@/commons/contants/method-status";
-
+import { getUserInfor, isNullOrEmpty } from "@/utils/functions/commonFns.js";
+import PopupDetailTask from "@/components/popup/PopupDetailTask.vue";
+import Users from "@/commons/models/Users";
+import router from "@/router/index.js";
+const isShowDetailPopup = ref(false);
 const isShowAddProjectPopup = ref(false);
 const isShowAddNewTask = ref(false);
 const view = ref("");
@@ -43,6 +59,17 @@ const taskSelectedID = ref();
 function onChangedView(string) {
   view.value = string;
 }
+const currentUser = ref(new Users());
+
+onBeforeMount(async () => {
+  // console.log(this.$store.getters.user);
+  const id = localStorage.getItem("currentUserID");
+  if (id && !isNullOrEmpty(id)) {
+    currentUser.value = await getUserInfor(id);
+  } else {
+    router.push("/login");
+  }
+});
 
 /**
  * thêm mới dự án thành công
@@ -72,11 +99,12 @@ function closeAddProjectPopup() {
 function onOpenPopupAddNewTask(id) {
   if (id) {
     taskFormMethod.value = methodStatus.Update;
+    isShowDetailPopup.value = true;
+    taskSelectedID.value = id;
   } else {
     taskFormMethod.value = methodStatus.Add;
+    isShowAddNewTask.value = true;
   }
-  taskSelectedID.value = id;
-  isShowAddNewTask.value = true;
 }
 
 /**
@@ -84,6 +112,7 @@ function onOpenPopupAddNewTask(id) {
  */
 function closePopupAddNewTask() {
   isShowAddNewTask.value = false;
+  taskSelectedID.value = "";
 }
 </script>
 <style lang="scss"></style>

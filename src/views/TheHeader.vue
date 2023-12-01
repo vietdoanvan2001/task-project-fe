@@ -2,12 +2,27 @@
   <div class="header-class d-flex align-items-center justify-content-between">
     <div
       class="d-flex align-items-center pointer"
-      v-if="view == RouterName.DashBoard"
+      v-if="
+        view == RouterName.DashBoard ||
+        route.fullPath == '/user-management' ||
+        route.fullPath == '/report'
+      "
+      @click="backToHome"
     >
       <div class="app-icon ml-px-40"></div>
       <div class="app-name">{{ t("Task") }}</div>
+      <div class="report-text" v-if="route.fullPath == '/report'">
+        {{ t("Report") }}
+      </div>
     </div>
-    <div class="d-flex align-items-center" v-if="view == RouterName.TheProject">
+    <div
+      class="d-flex align-items-center"
+      v-if="
+        view == RouterName.TheProject &&
+        route.fullPath != '/user-management' &&
+        route.fullPath != '/user-management'
+      "
+    >
       <div
         class="home-icon ml-px-40 mr-px-24 pointer"
         @click="backToHome"
@@ -64,16 +79,27 @@
     </div>
     <div class="d-flex align-items-center">
       <BaseButton
+        v-if="route.fullPath != '/user-management'"
         class="add-button mr-px-32"
         :type="ButtonType.AddButton"
         :text="t('AddNewTask')"
         @itemSelected="onOpenAddNewProject(methodStatus.Add)"
         @onClick="onOpenAddNewTask"
       ></BaseButton>
-
-      <PopoverUserInfor></PopoverUserInfor>
+      <div v-if="!user">Đăng nhập|Đăng ký</div>
+      <PopoverUserInfor :user="user" v-else></PopoverUserInfor>
     </div>
   </div>
+  <PopupConfirmDelete
+    :text="t('DeleteProjectConfirm')"
+    :isVisible="isShowDeleteConfirm"
+    @confirmDelete="DeleteProject"
+    @onHiddenPopup="
+      () => {
+        isShowDeleteConfirm = false;
+      }
+    "
+  ></PopupConfirmDelete>
 </template>
 <script setup>
 import PopoverUserInfor from "@/components/popover/PopoverUserInfor.vue";
@@ -82,6 +108,7 @@ import BaseButton from "@/components/base/BaseButton.vue";
 import { RouterName } from "@/commons/contants/router-name.js";
 import { TheProjectTab } from "@/commons/contants/the-project-tab.js";
 import BasePopover from "@/components/base/BasePopover.vue";
+import PopupConfirmDelete from "@/components/popup/PopupConfirmDelete.vue";
 import { useRoute } from "vue-router";
 import {
   getAllProject,
@@ -95,10 +122,12 @@ import i18n from "@/plugins/i18n";
 import Project from "@/commons/models/Project";
 import { responseStatus } from "@/commons/enums/api-response-status";
 import { methodStatus } from "@/commons/contants/method-status.js";
+import Users from "@/commons/models/Users";
 var { t } = i18n.global;
 const props = defineProps({
   view: String,
   reloadListProject: Boolean,
+  user: Users,
 });
 const emit = defineEmits();
 const selectedTab = ref(1);
@@ -106,6 +135,7 @@ const listProject = ref(Array < Project > []);
 const selectedProject = ref(Array);
 const route = useRoute();
 const isShowProjectSetting = ref(false);
+const isShowDeleteConfirm = ref(false);
 const settingSelection = [
   {
     ID: 0,
@@ -177,25 +207,32 @@ watch(
  * Chọn setting project item
  * @param {*} item
  */
-async function onSelectSettingItem(item) {
+function onSelectSettingItem(item) {
   if (item.ID == 0) {
     onOpenAddNewProject(methodStatus.Update);
   } else {
-    try {
-      const res = await deleteProjectByID(selectedProject.value.projectId);
-      console.log(res);
-      if (res && res.status && res.status == responseStatus.Success) {
-        showToast.success(t("DeleteProjectSuccess"));
-        backToHome();
-      } else {
-        showToast.error(t("Error"));
-      }
-    } catch (error) {
-      console.log(error);
-      showToast.error(t("Error"));
-    }
+    isShowDeleteConfirm.value = true;
   }
   isShowProjectSetting.value = false;
+}
+
+/**
+ * Xóa dự án theo id
+ */
+async function DeleteProject() {
+  try {
+    const res = await deleteProjectByID(selectedProject.value.projectId);
+    if (res && res.status && res.status == responseStatus.Success) {
+      showToast.success(t("DeleteProjectSuccess"));
+      backToHome();
+    } else {
+      showToast.error(t("Error"));
+    }
+  } catch (error) {
+    console.log(error);
+    showToast.error(t("Error"));
+  }
+  isShowDeleteConfirm.value = false;
 }
 
 /**
@@ -281,7 +318,7 @@ function backToHome() {
   z-index: 99;
   height: 48px;
   width: 100%;
-  box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.15);
   padding-right: 24px;
   .app-name {
     font-size: 24px;
@@ -320,6 +357,13 @@ function backToHome() {
   }
 }
 
+.report-text {
+  font-size: 17px;
+  padding: 0 24px;
+  font-weight: 700;
+  margin: 0 32px;
+  border-left: 1px solid #ccc;
+}
 .setting-selection {
   .setting-item {
     height: 36px;

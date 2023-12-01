@@ -44,6 +44,11 @@ const routers = [
                         path : Path.TheProject,
                         name : RouterName.TheProject,
                         component : lazyLoadView(RouterName.TheProject,'the-project'),
+                    },
+                    {
+                        path : Path.UserManagement,
+                        name : RouterName.UserManagement,
+                        component : lazyLoadView(RouterName.UserManagement,'user-management'),
                     }
                 ]
             },

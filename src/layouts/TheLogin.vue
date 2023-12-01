@@ -134,6 +134,8 @@ async function onClickLogin() {
   try {
     const res = await onLogin(acc.value);
     if (res && res.status && res.status == responseStatus.Success) {
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("currentUserID", res.data.data.id);
       showToast.success(t("LoginSuccess"));
       router.push("/management");
     } else {
