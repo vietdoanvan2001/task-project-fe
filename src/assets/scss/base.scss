@@ -311,6 +311,21 @@
     font-size: 12px;
 }
 
+/* Cho trình duyệt webkit (Chrome, Safari) */
+.scroll-container::-webkit-scrollbar {
+    width: 4px !important; /* Độ rộng của thanh cuộn dọc */
+  }
+  
+  .scroll-container::-webkit-scrollbar-thumb {
+    background-color: #888; /* Màu nền của thanh cuộn */
+    border-radius: 5px; /* Bo tròn các góc của thanh cuộn */
+  }
+  
+  .scroll-container::-webkit-scrollbar-track {
+    background-color: #eee; /* Màu nền của phần track của thanh cuộn */
+    border-radius: 5px; /* Bo tròn các góc của track */
+  }
+
 
 
 

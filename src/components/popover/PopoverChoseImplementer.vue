@@ -25,7 +25,7 @@
           <div
             class="avatar-32 bold"
             :style="{
-              backgroundColor: getAvatar(item).Background,
+              backgroundColor: item.background,
               color: '#ffffff',
             }"
           >

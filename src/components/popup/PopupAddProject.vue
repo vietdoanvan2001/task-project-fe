@@ -165,7 +165,15 @@
                     class="d-flex align-items-center justify-content-between pd-px-8"
                   >
                     <div class="d-flex align-items-center">
-                      <div class="assignee-avatar"></div>
+                      <div
+                        class="avatar-32 bold"
+                        :style="{
+                          backgroundColor: item.background,
+                          color: '#ffffff',
+                        }"
+                      >
+                        {{ getAvatar(item).Text }}
+                      </div>
                       <div class="ml-px-8">
                         <div class="bold">{{ item.fullName }}</div>
                         <div>{{ item.email }}</div>
@@ -284,6 +292,7 @@
 
   <!-- popup thêm thành viên -->
   <PopupAddNewMember
+    v-if="isShowAddMemberPopup"
     :isVisible="isShowAddMemberPopup"
     :listSelected="listAssignee"
     @onChangedMember="onChangedMember"
@@ -315,7 +324,7 @@ import Project from "@/commons/models/Project.js";
 import { ref, watch } from "vue";
 import i18n from "@/plugins/i18n";
 import Users from "@/commons/models/Users";
-import { isNullOrEmpty } from "@/utils/functions/commonFns";
+import { isNullOrEmpty, getAvatar } from "@/utils/functions/commonFns";
 import { responseStatus } from "@/commons/enums/api-response-status";
 import { showToast } from "@/utils/toast-message/toastMessage";
 import { useRoute } from "vue-router";
@@ -480,6 +489,24 @@ function beforeSaveForm() {
     projectData.value.Icon = "white-project-icon-" + iconIndex.value;
     projectData.value.Background =
       "project-background-" + backgroundIndex.value;
+    const currentUserID = localStorage.getItem("currentUserID");
+    projectData.value.ListAssigneeClone
+      ? projectData.value.ListAssigneeClone.push({
+          ID: currentUserID,
+          Role: {
+            ID: 0,
+            Name: t("Member"),
+          },
+        })
+      : (projectData.value.ListAssigneeClone = [
+          {
+            ID: currentUserID,
+            Role: {
+              ID: 0,
+              Name: t("Member"),
+            },
+          },
+        ]);
     projectData.value.ListAssignee = JSON.stringify(
       projectData.value.ListAssigneeClone
     );
@@ -508,7 +535,6 @@ async function onSavePopupForm(params) {
       }
       //Sửa
       else {
-        console.log(projectData.value);
         projectData.value.ProjectID = route.query.ProjectID;
         const res = await updateProject(
           route.query.ProjectID,

@@ -2,7 +2,11 @@
   <div class="table-container">
     <div class="table-header"></div>
     <div class="table-content">
-      <BaseDataGrid :dataSource="listTask" :columns="TaskColumnDefault">
+      <BaseDataGrid
+        :dataSource="listTask"
+        :columns="TaskColumnDefault"
+        @onRowClick="selectedRow"
+      >
         <template v-slot:StartDateTemplate="{ data }">
           <div>{{ formatDate(data.data.StartDate) }}</div>
         </template>
@@ -40,9 +44,19 @@ watch(
     if (props.data && props.data.length) {
       listTask.value = [...props.data];
     }
-    console.log(listTask.value);
+    // console.log(listTask.value);
   }
 );
+
+/**
+ * Chọn hàng
+ * @param {*} data
+ */
+function selectedRow(data) {
+  if (data && data.data && data.data.TaskID) {
+    emit("onOpenTaskEditForm", data.data.TaskID);
+  }
+}
 </script>
 <style lang="scss" scoped>
 .table-container {

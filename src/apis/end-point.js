@@ -4,9 +4,15 @@ export const endPoint = {
     USERS_FILTER: 'Users/GetFilterUsers',
     USERS_GETBYLISTID: '/Users/GetByListID',
     USERS_GETBYID:'/Users/GetByID',
+    USER_UPDATEPASS:'/Users/UpdatePassword',
+    USERS_UPDATESTATUS:'/Users/UpdateStatus',
+    USERS_MULTIPLEDELETE:'/Users/DeleteByListID',
+    USERS_ADDTOTRASH:'/Users/AddToTrash',
+    USERS_GETINTRASH:'/Users/GetUsersInTrash',
     PROJECT: '/Projects',
     PROJECT_UPDATE:'/Projects/UpdateByID',
     PROJECT_DELETEBYID:'/Projects/deleteByIntID',
+    PROJECT_GETBYUSERID:'/Projects/GetByUserID',
     KANBAN:'/Kanbans',
     KANBAN_GETBYPROJECTID:'/Kanbans/GetKanbanByProjectID',
     KANBAN_DELETEBYID:'/Kanbans/deleteByIntID',
@@ -16,5 +22,8 @@ export const endPoint = {
     TASK_GETBYPROJECTID:'/Tasks/GetTaskByProjectID',
     TASK_UPDATE:"/Tasks/UpdateByID",
     TASK_UPDATEPROCESS:"/Tasks/UpdateProcess",
-    TASK_UPDATEKANBAN:'/Tasks/UpdateKanban'
+    TASK_UPDATEKANBAN:'/Tasks/UpdateKanban',
+    TASK_DELETEBYID:'/Tasks/deleteByIntID',
+    TASK_GETTASKTYPE:'/Tasks/GetTaskByType',
+    TASK_GETUSERAMOUNTTASK:'/Tasks/GetUsersAmountTask'
   }

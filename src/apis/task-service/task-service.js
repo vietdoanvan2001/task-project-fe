@@ -15,13 +15,23 @@ export async function getAllTask(){
 /**
  * Lấy danh sách công việc theo dự án
  */
-export async function getTaskByProjectID(id){
-    const endpoint = endPoint.TASK_GETBYPROJECTID+"/"+id
-    return await axios.getAxios(endpoint);
+export async function getTaskByProjectID(param){
+    const endpoint = endPoint.TASK_GETBYPROJECTID
+    return await axios.getAxios(endpoint,param);
 }
 
 export async function getTaskByID(id){
     const endpoint = endPoint.TASK+"/"+id
+    return await axios.getAxios(endpoint)
+}
+
+export async function getTaskType(projectID){
+    const endpoint = endPoint.TASK_GETTASKTYPE+"/"+projectID
+    return await axios.getAxios(endpoint)
+}
+
+export async function GetUsersAmountTask(projectID){
+    const endpoint = endPoint.TASK_GETUSERAMOUNTTASK+"/"+projectID
     return await axios.getAxios(endpoint)
 }
 
@@ -51,4 +61,10 @@ export async function updateProcess(param){
 export async function updateTaskKanban(param){
     const endpoint = endPoint.TASK_UPDATEKANBAN
     return await axios.putAxios(endpoint,param)
+}
+
+//delete API
+export async function deleteTask(id) {
+    const endpoint = endPoint.TASK_DELETEBYID+"/"+id
+    return await axios.deleteAxios(endpoint)
 }

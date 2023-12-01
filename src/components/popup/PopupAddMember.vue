@@ -35,8 +35,9 @@
             :class="!listSelectedData.length ? 'pt-px-23' : ''"
             :data-source="data"
             :columns="gridColumns"
-            :height="272"
+            :height="350"
             :selectionMode="SelectionMode.Multiple"
+            :pageSize="5"
             :keyExpr="'id'"
             :showPaging="true"
             :totalData="totalData"
@@ -156,14 +157,17 @@ const totalData = ref(0);
 
 const gridColumns = ref([
   {
+    Width: 200,
     DataField: "fullName",
     Caption: t("FullName"),
   },
   {
+    Width: 200,
     DataField: "email",
     Caption: t("Email"),
   },
   {
+    Width: 140,
     DataField: "phoneNumber",
     Caption: t("PhoneNumber"),
   },
@@ -178,6 +182,19 @@ const props = defineProps({
     type: Array,
   },
 });
+
+watch(
+  () => props.listSelected,
+  () => {
+    if (props.listSelected) {
+      listSelectedData.value = [...props.listSelected];
+      listSelectedID.value = listSelectedData.value.map((item) => item.id);
+      console.log(listSelectedData.value);
+      console.log(listSelectedID.value);
+    }
+  },
+  { immediate: true }
+);
 
 const emit = defineEmits();
 
@@ -231,7 +248,10 @@ function unSelectedAll() {
 /**
  * Khởi tạo
  */
-function onContentReady() {}
+function onContentReady() {
+  console.log(listSelectedData.value);
+  console.log(listSelectedID.value);
+}
 
 /**
  * Lọc thành viên
@@ -247,10 +267,12 @@ async function getUser(pageIndex, pageSize) {
     const res = await getFilterUser(filterParams);
     if (res && res.data && res.status && res.status == responseStatus.Success) {
       if (res.data.PageData) {
-        data.value = res.data.PageData;
+        const temp = res.data.PageData;
+        const currentID = localStorage.getItem("currentUserID");
+        data.value = temp.filter((item) => item.id != currentID);
       }
       if (res.data.Total) {
-        totalData.value = res.data.Total;
+        totalData.value = res.data.Total - 1;
       }
     } else {
       showToast.error(t("Error"));

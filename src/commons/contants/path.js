@@ -10,5 +10,6 @@ export const Path = {
     Report:'/report',
     Kanban:'/kanban',
     TaskGrid:'/taskgrid',
-    TheProject:'/project'
+    TheProject:'/project',
+    UserManagement:'/user-management'
 }

@@ -13,12 +13,11 @@
       :selectedRowKeys="selectedItems"
       @selectionChanged="onSelectionChanged($event)"
       @row-removed="onDeleteRow($event)"
+      @rowClick="onRowClick($event)"
     >
-      <DxSelection
-        :select-all-mode="allMode"
-        :show-check-boxes-mode="checkBoxesMode"
-        :mode="selectionMode"
-      />
+      <DxScrolling row-rendering-mode="virtual" />
+      <DxPaging :page-size="pageSize" />
+      <DxSelection :mode="selectionMode" :deferred="false" />
       <DxColumn
         v-for="(item, index) in columns"
         :caption="item.Caption"
@@ -40,11 +39,12 @@
         :confirmDelete="false"
         :texts="{
           deleteRow: '',
+          editRow: '',
         }"
         mode="row"
       />
     </DxDataGrid>
-    <div
+    <!-- <div
       class="d-flex align-items-center justify-content-between mt-px-16"
       v-if="showPaging"
     >
@@ -71,7 +71,7 @@
           @click="nextPage"
         ></div>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 <script setup>
@@ -79,15 +79,20 @@ import i18n from "@/plugins/i18n";
 var { t } = i18n.global;
 import { ref, watch, computed, onBeforeMount } from "vue";
 import {
+  DxPaging,
   DxDataGrid,
   DxColumn,
   DxSelection,
   DxEditing,
+  DxScrolling,
 } from "devextreme-vue/data-grid";
 
 const props = defineProps({
   keyExpr: String,
-  dataSource: Array,
+  dataSource: {
+    type: Array,
+    default: [],
+  },
   columns: Array,
   width: Number,
   height: Number,
@@ -108,20 +113,10 @@ const props = defineProps({
     default: false,
   },
   totalData: Number,
-});
-const pageSize = ref(4);
-const pageIndex = ref(0);
-const canBack = computed(() => {
-  if (pageIndex.value > 0) {
-    return true;
-  }
-  return false;
-});
-const canNext = computed(() => {
-  if ((pageIndex.value + 1) * pageSize.value <= props.totalData) {
-    return true;
-  }
-  return false;
+  pageSize: {
+    type: Number,
+    default: 10,
+  },
 });
 
 const emit = defineEmits();
@@ -129,6 +124,25 @@ const emit = defineEmits();
 const celltemplate = ref(null);
 celltemplate.value = props.columns.map((x) => x.CellTemplate);
 const selectedItems = ref([]);
+
+watch(
+  () => props.selectedRowKeysProps,
+  () => {
+    if (props.selectedRowKeysProps && props.selectedRowKeysProps.length) {
+      selectedItems.value = [...props.selectedRowKeysProps];
+      console.log(selectedItems.value);
+    }
+  },
+  { immediate: true }
+);
+
+// watch(
+//   () => props.dataSource,
+//   () => {
+//     console.log(props.dataSource);
+//   },
+//   { immediate: true }
+// );
 
 onBeforeMount(() => {
   getDataGrid();
@@ -138,7 +152,7 @@ onBeforeMount(() => {
  * Lấy dữ liệu bảng
  */
 function getDataGrid() {
-  emit("getData", pageIndex.value, pageSize.value);
+  emit("getData", 0, 10000000);
 }
 
 /**
@@ -178,6 +192,11 @@ function onSelectionChanged(event) {
   if (event && event.selectedRowsData) {
     emit("onSelectionChanged", event.selectedRowsData);
   }
+}
+
+function onRowClick(event) {
+  // Kiểm tra xem sự kiện được kích hoạt từ ô tích chọn hay không
+  emit("onRowClick", event);
 }
 </script>
 <style lang="scss">
@@ -222,6 +241,7 @@ function onSelectionChanged(event) {
 }
 
 .dx-link-delete {
+  opacity: 0;
   width: 18px !important;
   height: 18px !important;
   -webkit-mask-image: url("../../assets/images/ICON.svg");
@@ -230,6 +250,55 @@ function onSelectionChanged(event) {
   background-color: var(--app-color-danger);
 }
 
+.dx-link-edit {
+  opacity: 0;
+  width: 18px !important;
+  height: 18px !important;
+  -webkit-mask-image: url("../../assets/images/ICON.svg");
+  -webkit-mask-position: -680px -358px;
+  -webkit-mask-repeat: no-repeat;
+  background-color: var(--app-color-secondary-text);
+}
+
+.dx-state-hover {
+  .dx-link-delete,
+  .dx-link-edit {
+    opacity: 1;
+  }
+}
+
+.dx-datagrid .dx-row > td {
+  height: 44px;
+  line-height: 26px;
+  padding: 8px 24px !important;
+}
+
+.dx-datagrid-pager {
+  border: none !important;
+  padding: 24px;
+}
+
+.dx-page-indexes {
+  .dx-selection {
+    cursor: inherit;
+    text-shadow: none;
+    color: var(--app-color-white) !important;
+    border-color: transparent;
+    background-color: var(--app-color-primary) !important;
+    border-radius: 50%;
+    height: 36px !important;
+    width: 36px !important;
+    font-weight: 700;
+  }
+
+  .dx-page {
+    padding: 7px 13px 8px !important;
+  }
+}
+
+.dx-widget {
+  max-width: 3000px !important;
+}
 // .dx-datagrid-rowsview .dx-selection.dx-row:not(.dx-row-focused) > td {
 //   background-color: #e5f0f8;
 // }

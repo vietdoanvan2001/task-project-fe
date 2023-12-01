@@ -136,6 +136,7 @@ import {
   isEmailValid,
   containsOnlyNumbers,
   isNullOrEmpty,
+  getRandomColor,
 } from "@/utils/functions/commonFns.js";
 import router from "../router";
 import i18n from "@/plugins/i18n";
@@ -219,6 +220,7 @@ async function onRegister() {
     return;
   }
   try {
+    userData.value.Background = getRandomColor();
     const res = await addNewUser(userData.value);
     if (res && res.status && res.status == responseStatus.InsertSuccess) {
       showToast.success(t("RegisterSuccess"));

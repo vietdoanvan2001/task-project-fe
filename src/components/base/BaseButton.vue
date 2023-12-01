@@ -39,6 +39,7 @@
       :width="width"
       :height="height"
       :type="type"
+      :style="mode == 'delete' ? { background: 'red !important' } : {}"
       @click="onClick($event)"
     ></DXButton>
   </div>

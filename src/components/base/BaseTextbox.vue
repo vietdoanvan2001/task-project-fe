@@ -68,7 +68,8 @@ watch(
   () => props.value,
   () => {
     textValue.value = props.value;
-  }
+  },
+  { immediate: true }
 );
 
 /**

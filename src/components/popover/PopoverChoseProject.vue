@@ -6,7 +6,6 @@
     @click="
       () => {
         isVisible = true;
-        console.log(isVisible);
       }
     "
   >

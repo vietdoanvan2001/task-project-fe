@@ -39,7 +39,7 @@
                   "
                 ></PopoverSelectList>
               </div>
-              <div class="pl-px-12">
+              <!-- <div class="pl-px-12">
                 <PopoverTaskProcess
                   :id="selectedTask.taskID"
                   :process="selectedTask.process"
@@ -50,7 +50,7 @@
                     }
                   "
                 ></PopoverTaskProcess>
-              </div>
+              </div> -->
             </div>
           </div>
           <div class="row">
@@ -160,7 +160,7 @@
                   <div
                     class="avatar-32 bold"
                     :style="{
-                      backgroundColor: getAvatar(selectedAssignee).Background,
+                      backgroundColor: selectedAssignee.background,
                       color: '#ffffff',
                     }"
                     v-else
@@ -362,6 +362,9 @@ async function getSelectedTask(id) {
 }
 
 async function getUserByID(id) {
+  if (!id || id == "00000000-0000-0000-0000-000000000000") {
+    return;
+  }
   try {
     const res = await getUserById(id);
     if (res && res.status && res.status == responseStatus.Success && res.data) {
@@ -393,6 +396,8 @@ async function showAssigneeSelection() {
 }
 
 async function getAllAssignee() {
+  console.log(selectedProject.value);
+  const tempArray = JSON.parse(selectedProject.value.listAssignee);
   try {
     const result = await getAllUsers();
     if (
@@ -401,7 +406,17 @@ async function getAllAssignee() {
       result.status == responseStatus.Success &&
       result.data
     ) {
-      listAssignee.value = result.data;
+      listAssignee.value = [];
+      const temp = result.data;
+      if (temp && temp.length) {
+        temp.forEach((element) => {
+          tempArray.forEach((item) => {
+            if (item.ID == element.id) {
+              listAssignee.value.push(element);
+            }
+          });
+        });
+      }
     } else {
       showToast.error(t("Error"));
     }
@@ -456,6 +471,7 @@ function onBeforeSave() {
       taskData.value.AssigneeId = selectedAssignee.value.id;
       taskData.value.AssigneeEmail = selectedAssignee.value.email;
       taskData.value.AssigneeName = selectedAssignee.value.fullName;
+      taskData.value.FinishDate = selectedTask.value.finishDate;
     }
   }
 }
@@ -486,7 +502,6 @@ async function saveForm() {
       else {
         taskData.value.TaskID = props.taskSelectedID;
         taskData.value.Process = selectedTask.value.process;
-        console.log(taskData.value);
         const res = await updateTask(taskData.value.TaskID, taskData.value);
         if (res && res.status && res.status == responseStatus.Success) {
           showToast.success(t("UpdateTaskSuccess"));
@@ -508,6 +523,7 @@ async function saveForm() {
  * @param {*} item
  */
 function onSelectedProject(item) {
+  selectedProject.value = item;
   selectedProject.value.projectId = item.projectId;
   getKanban(selectedProject.value.projectId);
 }
@@ -517,7 +533,6 @@ function onSelectedProject(item) {
  * @param {} item
  */
 function selectStatus(item) {
-  console.log(item);
   if (item) {
     selectedStatus.value.KanbanID = item.KanbanID;
   }
@@ -528,7 +543,11 @@ function selectStatus(item) {
  */
 async function getKanban(projectID) {
   try {
-    const res = await getKanbanByProjectID(projectID);
+    const param = {
+      idProject: projectID,
+      userID: "11111111-1111-1111-1111-111111111111",
+    };
+    const res = await getKanbanByProjectID(param);
     if (res && res.status == responseStatus.Success && res.data) {
       listStatus.value = res.data;
       if (selectedTask.value && selectedTask.value.kanbanID) {
@@ -539,7 +558,7 @@ async function getKanban(projectID) {
         selectedStatus.value = listStatus.value[0];
       }
     } else {
-      console.log("error");
+      showToast.error(t("Error"));
     }
   } catch (error) {
     console.log(error);
@@ -595,7 +614,7 @@ function closePopup() {
     white-space: nowrap;
   }
   .status-name {
-    max-width: 190px;
+    // max-width: 190px;
     height: 18px;
   }
 }
