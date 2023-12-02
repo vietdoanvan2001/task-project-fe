@@ -5,7 +5,8 @@
       v-if="
         view == RouterName.DashBoard ||
         route.fullPath == '/user-management' ||
-        route.fullPath == '/report'
+        route.fullPath == '/report' ||
+        route.fullPath == '/permistion'
       "
       @click="backToHome"
     >
@@ -20,7 +21,8 @@
       v-if="
         view == RouterName.TheProject &&
         route.fullPath != '/user-management' &&
-        route.fullPath != '/user-management'
+        route.fullPath != '/report' &&
+        route.fullPath != '/permistion'
       "
     >
       <div
@@ -79,7 +81,10 @@
     </div>
     <div class="d-flex align-items-center">
       <BaseButton
-        v-if="route.fullPath != '/user-management'"
+        v-if="
+          route.fullPath != '/user-management' &&
+          route.fullPath != '/permistion'
+        "
         class="add-button mr-px-32"
         :type="ButtonType.AddButton"
         :text="t('AddNewTask')"
@@ -306,7 +311,9 @@ function selectTab(item) {
  * Về trang chủ
  */
 function backToHome() {
-  router.push("/management");
+  if (route.fullPath != "/permistion") {
+    router.push("/management");
+  }
 }
 </script>
 <style lang="scss" scoped>

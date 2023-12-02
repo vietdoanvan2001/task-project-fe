@@ -347,6 +347,60 @@ $icon-project: url('../images/icon_project.svg');
 
 //nobody icon
 @include setIconWithDefaultColor(
+    noProblem-icon,
+    22px,
+    20px,
+    -453px, -134px,
+    $link-icon-v1
+);
+
+//nobody icon
+@include setIconWithDefaultColor(
+    done-icon,
+    20px,
+    20px,
+    -399px, -742px,
+    $link-icon-v1
+);
+
+//nobody icon
+@include setIconWithDefaultColor(
+    noneAssignee-icon,
+    24px,
+    24px,
+    -484px, -132px,
+    $link-icon-v1
+);
+
+//nobody icon
+@include setIconWithDefaultColor(
+    dueTo-icon,
+    22px,
+    22px,
+    -421px, -133px,
+    $link-icon-v1
+);
+
+//nobody icon
+@include setIconWithDefaultColor(
+    toDay-icon,
+    22px,
+    22px,
+    -389px, -133px,
+    $link-icon-v1
+);
+
+//nobody icon
+@include setIconWithDefaultColor(
+    outOfDate-icon,
+    22px,
+    22px,
+    -357px, -133px,
+    $link-icon-v1
+);
+
+//nobody icon
+@include setIconWithDefaultColor(
     review-icon,
     20px,
     20px,
