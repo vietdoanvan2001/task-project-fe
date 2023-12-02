@@ -156,6 +156,8 @@
     "CanDoAfter":"Lên lịch làm sau",
     "CanReview":"Xem xét bỏ qua",
     "Project":"Dự án/nhóm",
-    "TaskAmount":"Số lượng công việc"
+    "TaskAmount":"Số lượng công việc",
+    "NeedToDoJobList":"Danh sách công việc cần làm",
+    "TodayTaskAmount":"Số lượng công việc hôm nay"
 
 }

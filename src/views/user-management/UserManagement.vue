@@ -117,7 +117,7 @@
       </div>
       <BaseDataGrid
         :data-source="selectedTab == 1 ? listData : listTrashData"
-        :columns="gridColumns"
+        :columns="selectedTab == 1 ? gridColumns : trashColumns"
         :alowDelete="false"
         :alowUpdate="false"
         :selectionMode="SelectionMode.Multiple"
@@ -218,6 +218,32 @@ const gridColumns = ref([
   {
     Width: 120,
     Alignment: "center",
+    CellTemplate: "MethodTemplate",
+  },
+]);
+
+const trashColumns = ref([
+  {
+    DataField: "FullName",
+    Caption: t("FullName"),
+  },
+  {
+    DataField: "Email",
+    Caption: t("Email"),
+  },
+  {
+    DataField: "PhoneNumber",
+    Caption: t("PhoneNumber"),
+  },
+  {
+    DataField: "Status",
+    Caption: t("Status"),
+    Alignment: "left",
+    CellTemplate: "StatusTemplate",
+  },
+  {
+    Width: 120,
+    Alignment: "Center",
     CellTemplate: "MethodTemplate",
   },
 ]);

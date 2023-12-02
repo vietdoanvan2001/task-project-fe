@@ -8,6 +8,7 @@
   ></TheHeader>
   <router-view
     :reloadListProject="reloadListProject"
+    :currentUser="currentUser"
     @onChangedView="onChangedView"
     @onOpenTaskEditForm="onOpenPopupAddNewTask"
   ></router-view>
