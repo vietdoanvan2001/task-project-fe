@@ -13,9 +13,9 @@ function lazyLoadLayout(layout) {
     return () => import(`@/layouts/${layout}.vue`)
 }
 
-function lazyLoadPage(page) {
-    return () => import(`@/pages/${page}.vue`)
-}
+// function lazyLoadPage(page) {
+//     return () => import(`@/pages/${page}.vue`)
+// }
 
 const routers = [
     {
@@ -44,6 +44,11 @@ const routers = [
                         path : Path.TheProject,
                         name : RouterName.TheProject,
                         component : lazyLoadView(RouterName.TheProject,'the-project'),
+                    },
+                    {
+                        path : Path.UserManagement,
+                        name : RouterName.UserManagement,
+                        component : lazyLoadView(RouterName.UserManagement,'user-management'),
                     }
                 ]
             },
@@ -59,16 +64,16 @@ const routers = [
             }
         ]
     },
-    {
-        path: Path.Maintain,
-        name: RouterName.Maintain,
-        component: lazyLoadPage('MaintainPage')
-    },
-    {
-        path: Path.NoPermission,
-        name: RouterName.NoPermission,
-        component: lazyLoadPage('403Page')
-    },
+    // {
+    //     path: Path.Maintain,
+    //     name: RouterName.Maintain,
+    //     component: lazyLoadPage('MaintainPage')
+    // },
+    // {
+    //     path: Path.NoPermission,
+    //     name: RouterName.NoPermission,
+    //     component: lazyLoadPage('403Page')
+    // },
     {
         path: Path.VControl,
         name: RouterName.VControl,

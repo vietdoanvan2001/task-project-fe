@@ -1,4 +1,17 @@
 <template lang="">
+  <div
+    class="d-flex align-items-center pointer"
+    :id="target"
+    :title="selected?.ColumnName"
+    @click="
+      () => {
+        isVisible = true;
+      }
+    "
+  >
+    <div class="status-name line-clamp-1">{{ selected?.ColumnName }}</div>
+    <div class="arrow-down-icon mt-px-2 ml-px-8"></div>
+  </div>
   <BasePopover
     :width="width"
     :target="target"
@@ -13,22 +26,32 @@
     <template v-slot:content>
       <div class="content-class">
         <div v-for="(item, index) in listData" :key="index">
-          <div
+          <!-- <div
             class="d-flex align-items-center justify-content-between select-item"
             :style="
-              selected && selected.ID > -1 && index == selected.ID
+              selected &&
+              selected.KanbanID > -1 &&
+              item.KanbanID == selected.KanbanID
                 ? { backgroundColor: '#e1eeff !important' }
                 : {}
             "
             @click="selectItem(item)"
+          > -->
+          <div
+            class="d-flex align-items-center justify-content-between select-item"
+            @click="selectItem(item)"
           >
             <div class="pr-px-8">
-              {{ item.Name }}
+              {{ item.ColumnName }}
             </div>
-            <div
+            <!-- <div
               class="primary-ticked-icon"
-              v-if="selected && selected.ID > -1 ? index == selected.ID : false"
-            ></div>
+              v-if="
+                selected && selected.KanbanID > -1
+                  ? item.KanbanID == selected.KanbanID
+                  : false
+              "
+            ></div> -->
           </div>
         </div>
       </div>
@@ -37,20 +60,29 @@
 </template>
 <script setup>
 import BasePopover from "@/components/base/BasePopover.vue";
-import { onBeforeMount, ref } from "vue";
+import { onBeforeMount, ref, watch } from "vue";
 import i18n from "@/plugins/i18n";
 var { t } = i18n.global;
 
 const props = defineProps({
   width: Number,
-  target: String,
-  isVisible: Boolean,
   title: String,
   listData: Array,
   selectedItem: Object,
+  target: String,
 });
 
 const selected = ref(props.selectedItem);
+watch(
+  () => props.selectedItem,
+  () => {
+    selected.value = props.selectedItem;
+  },
+  {
+    immediate: true,
+  }
+);
+const isVisible = ref(false);
 
 const emit = defineEmits();
 
@@ -58,19 +90,25 @@ const emit = defineEmits();
  * Ẩn popover
  */
 function onHidden() {
+  isVisible.value = false;
   emit("onHidden");
 }
 
+/**
+ * Chọn item
+ * @param {*} item
+ */
 function selectItem(item) {
   selected.value = item;
-  emit("onValueChanged", selected);
+  emit("onValueChanged", selected.value);
   onHidden();
 }
 </script>
 <style lang="scss" scoped>
 .header-class {
-  padding: 24px 24px 8px 24px;
+  padding: 12px 24px 8px 24px;
   font-weight: 700;
+  font-size: 14px;
 }
 .content-class {
   // padding-top: 52px;
