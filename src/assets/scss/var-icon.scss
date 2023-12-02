@@ -23,6 +23,57 @@ $icon-project: url('../images/icon_project.svg');
     $link-icon-v1
 );
 
+//Close icon
+@include setIconWithDefaultColor(
+    close-icon,
+    15px,
+    14px,
+    -408px,
+     -841px,
+    $link-icon-v1
+);
+
+//icon-bình luận
+@include setIconWithDefaultColor(
+    comment-icon,
+    18px,
+    16px,
+    -39px, 
+    -41px,
+    $link-icon-v1
+);
+
+//icon-bình luận màu xanh
+@include setIconWithCustomColor(
+    primary-comment-icon,
+    18px,
+    16px,
+    -39px, 
+    -41px,
+    $link-icon-v1,
+    var(--app-color-primary)
+);
+
+//icon hoạt động màu xanh
+@include setIconWithCustomColor(
+    primary-activity-icon,
+    14px,
+    16px,
+    -73px, -40px,
+    $link-icon-v1,
+    var(--app-color-primary)
+);
+
+//icon hoạt động
+@include setIconWithDefaultColor(
+    activity-icon,
+    14px,
+    16px,
+    -73px, -40px,
+    $link-icon-v1
+);
+
+
 //add white color icon
 @include setIconWithCustomColor(
     white-add-icon,
@@ -32,6 +83,17 @@ $icon-project: url('../images/icon_project.svg');
     -106px,
     $link-icon-v1,
     #ffffff
+);
+
+//add primary color icon
+@include setIconWithCustomColor(
+    primary-add-icon,
+    14px,
+    14px,
+    -170px,
+    -106px,
+    $link-icon-v1,
+    var(--app-color-primary)
 );
 
 //add member color icon
@@ -65,6 +127,27 @@ $icon-project: url('../images/icon_project.svg');
     -805px,
     $link-icon-v1,
     #ffffff
+);
+
+//back icon
+@include setIconWithDefaultColor(
+    back-icon,
+    9px,
+    15px,
+    -492px,
+    -329px,
+    $link-icon-v1,
+    180deg
+);
+
+//next icon
+@include setIconWithDefaultColor(
+    next-icon,
+    9px,
+    15px,
+    -492px,
+    -329px,
+    $link-icon-v1
 );
 
 //back primary color icon
@@ -235,6 +318,171 @@ $icon-project: url('../images/icon_project.svg');
     $link-icon-v2
 );
 
+//nobody icon
+@include setIconWithDefaultColor(
+    need-do-now-icon,
+    20px,
+    20px,
+    -454px, -584px,
+    $link-icon-v1
+);
+
+//nobody icon
+@include setIconWithDefaultColor(
+    do-after-icon,
+    20px,
+    20px,
+    -486px, -586px,
+    $link-icon-v1
+);
+
+//nobody icon
+@include setIconWithDefaultColor(
+    unassign-yet-icon,
+    20px,
+    20px,
+    -516px, -586px,
+    $link-icon-v1
+);
+
+//nobody icon
+@include setIconWithDefaultColor(
+    review-icon,
+    20px,
+    20px,
+    -546px, -586px,
+    $link-icon-v1
+);
+
+//nobody icon
+@include setIconWithDefaultColor(
+    nobody-icon,
+    32px,
+    32px,
+    -544px, -256px,
+    $link-icon-v1
+);
+
+//nobody icon đen
+@include setIconWithCustomColor(
+    black-nobody-icon,
+    32px,
+    32px,
+    -544px, -256px,
+    $link-icon-v1,
+    var(--app-color-secondary-text)
+);
+
+//allmember icon
+@include setIconWithCustomColor(
+    all-member-icon,
+    22px,
+    20px,
+    -453px, -38px,
+    $link-icon-v1,
+    var(--app-color-white)
+);
+
+//allmember icon đen
+@include setIconWithCustomColor(
+    black-all-member-icon,
+    22px,
+    20px,
+    -453px, -38px,
+    $link-icon-v1,
+    var(--app-color-secondary-text)
+);
+
+//delete icon
+@include setIconWithDefaultColor(
+    delete-icon,
+    13px,
+    12px,
+    -361px,
+     -106px,
+    $link-icon-v1
+);
+
+//icon thùng rác
+@include setIconWithCustomColor(
+    trash-icon,
+    20px,
+    20px,
+    -518px,
+    -358px,
+    $link-icon-v1,
+    var(--app-color-secondary-text)
+);
+
+//icon thùng rác trắng
+@include setIconWithCustomColor(
+    white-trash-icon,
+    18px,
+    19px,
+    -583px, -199px,
+    $link-icon-v1,
+    var(--app-color-white)
+);
+
+//icon thùng rác đỏ
+@include setIconWithCustomColor(
+    red-trash-icon,
+    18px,
+    19px,
+    -583px, -199px,
+    $link-icon-v1,
+    var(--app-color-danger)
+);
+
+//icon restore trắng
+@include setIconWithCustomColor(
+    white-restore-icon,
+    16px,
+    17px,
+    -487px, -680px,
+    $link-icon-v1,
+    var(--app-color-white)
+);
+
+//Icon bút chì to :v
+@include setIconWithDefaultColor(
+    big-pencil-icon,
+    20px,
+    20px,
+    -422px,
+    -678px,
+    $link-icon-v1
+);
+
+//Icon bút chì
+@include setIconWithDefaultColor(
+    pencil-icon,
+    17px,
+    16px,
+    -680px,
+    -360px,
+    $link-icon-v1
+);
+
+//Icon active
+@include setIconWithDefaultColor(
+    active-icon,
+    16px,
+    16px,
+    -262px, 
+    -676px,
+    $link-icon-v1
+);
+
+//Icon inactive
+@include setIconWithDefaultColor(
+    inactive-icon,
+    16px,
+    16px,
+    -293px,
+    -676px,
+    $link-icon-v1
+);
 
 //user setting icon
 @include setIconWithDefaultColor(

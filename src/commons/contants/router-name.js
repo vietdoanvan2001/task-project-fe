@@ -10,5 +10,6 @@ export const RouterName = {
     Report:'ViewReport',
     Kanban:'ViewKanban',
     TaskGrid:'ViewTaskGrid',
-    TheProject:'TheProject'
+    TheProject:'TheProject',
+    UserManagement:'UserManagement'
 }

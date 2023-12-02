@@ -1,4 +1,9 @@
 import { DateStatus } from "@/commons/contants/date-status";
+import { getUserById } from "@/apis/user-service/user-service";
+import { showToast } from "../toast-message/toastMessage";
+import { responseStatus } from "@/commons/enums/api-response-status";
+import i18n from "@/plugins/i18n";
+var { t } = i18n.global;
 /**
  * Check chuỗi rỗng hoặc null
  * @param {*} str 
@@ -73,6 +78,47 @@ export function getRandomColor(){
 }
 
 /**
+ * Lấy avatar
+ */
+export function getAvatar(user){
+  const background = getRandomColor();
+  if(user){
+    const name = user.fullName?.toUpperCase().trim().split(" ")
+    if(!name){
+      return {
+        Text: 'undefined',
+        Background: background
+      }
+    }
+    if(name.length > 1){
+      return {
+        Text: name[0][0]+name[name.length-1][0],
+        Background: background
+      }
+    }
+    return {
+      Text: name[0][0],
+      Background: background
+    }
+
+  }
+}
+
+export function getName(string){
+  if(string && !isNullOrEmpty(string)){
+    const name = string?.toUpperCase().trim().split(" ")
+    if(!name){
+      return 'undefined'
+    }
+    if(name.length > 1){
+      return name[0][0]+name[name.length-1][0]
+    }
+    return name[0][0]
+  }
+  return 'undefined'
+}
+
+/**
  * Lấy giờ hiện tại
  * @returns 
  */
@@ -93,13 +139,28 @@ export function getCurrentTime() {
 export function formatDate(inputDate) {
   const date = new Date(inputDate);
   
-  const day = date.getDate().toString().padStart(2, '0');
-  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const day = (date.getDate()).toString().padStart(2, '0');
+  const month = (date.getMonth()).toString().padStart(2, '0');
   const year = date.getFullYear();
 
   const formattedDate = `${day}/${month}/${year}`;
 
   return formattedDate;
+}
+
+export async function getUserInfor(id){
+  try {
+    const res = await getUserById(id)
+    if(res && res.status && res.data && res.status == responseStatus.Success){
+      return res.data
+    }
+    else{
+      showToast.error(t('Error'))
+    }
+  } catch (error) {
+    console.log(error);
+    showToast.error(t('Error'))
+  }
 }
 
 /**
@@ -109,22 +170,23 @@ export function formatDate(inputDate) {
  * @returns 
  */
 export function validateDate(endDate, finishDate){
-  const today = new Date();
-  const end = new Date(endDate);
-  const finish = new Date(finishDate);
+  const today = formatDate(new Date());
+  const end = formatDate(new Date(endDate));
+  const finish = formatDate(new Date(finishDate));
   const oneDay = 24 * 60 * 60 * 1000;
   if(finishDate){
-    if(end < finish){
-      return DateStatus.OutOfDate
-    }
+    // if(end < finish){
+    //   return DateStatus.OutOfDate
+    // }
     return DateStatus.Done
   }
   
   if(!endDate){
     return DateStatus.NoProblem;
   }
-  const differenceInDays = Math.floor((end - today) / oneDay);
-
+  const endArr = end.split("/")
+  const todayArr = today.split("/")
+  const differenceInDays = Math.floor((endArr[2]-todayArr[2])*365+(endArr[1]-todayArr[1])*30+(endArr[0]-todayArr[0]));
   if (differenceInDays < 0) {
     return DateStatus.OutOfDate;
   } else if (differenceInDays === 0) {
