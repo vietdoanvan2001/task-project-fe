@@ -7,7 +7,7 @@
         :inner-radius="0.7"
         type="doughnut"
         :palette="customColors"
-        diameter="0.7"
+        diameter="0.8"
         :width="600"
         :height="250"
         startAngle="90"
@@ -69,7 +69,7 @@
       <BaseDataGrid
         :dataSource="selectedGrid.Data"
         :columns="TaskSubColumnDefault"
-        :pageSize="5"
+        :pageSize="9"
         @onRowClick="selectedRow"
       >
         <template v-slot:StartDateTemplate="{ data }">
