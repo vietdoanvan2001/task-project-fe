@@ -252,6 +252,7 @@ async function getKanban(id) {
     if (res && res.status && res.status == responseStatus.Success && res.data) {
       kanbanData.value = res.data;
       kanbanDataClone.value = [...kanbanData.value];
+      console.log(kanbanDataClone.value);
     }
   } catch (error) {
     console.log(error);

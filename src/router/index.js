@@ -36,6 +36,11 @@ const routers = [
                         component : lazyLoadView(RouterName.DashBoard,'dash-board')
                     },
                     {
+                        path : Path.NoPermission,
+                        name : RouterName.NoPermission,
+                        component : lazyLoadView(RouterName.NoPermission,'no-role')
+                    },
+                    {
                         path : Path.Report,
                         name : RouterName.Report,
                         component : lazyLoadView(RouterName.Report,'report')
