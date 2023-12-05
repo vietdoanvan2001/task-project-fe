@@ -81,16 +81,15 @@ const isVisible = ref(false);
 const listDataClone = ref(Array < Project > []);
 const selectedItem = ref(new Project());
 
-// watch(
-//   () => props.selectedItem,
-//   () => {
-//     console.log(props.selectedItem);
-//     if (props.selectedItem) {
-//       selectedItem.value = props.selectedItem;
-//     }
-//   },
-//   { immediate: true }
-// );
+watch(
+  () => props.selectedItem,
+  () => {
+    if (props.selectedItem) {
+      selectedItem.value = props.selectedItem;
+    }
+  },
+  { immediate: true }
+);
 
 watch(
   () => props.dataSource,
@@ -131,7 +130,7 @@ function searchProject(keyWord) {
  * @param {*} item
  */
 function selectItem(item) {
-  console.log(item);
+  // console.log(item);
   selectedItem.value = item;
   onHidden();
   emit("onSelectedItem", selectedItem.value);
