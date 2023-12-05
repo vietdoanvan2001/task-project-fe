@@ -312,6 +312,19 @@ const emit = defineEmits();
 onBeforeMount(async () => {
   selectedStatus.value = listStatus.value[0];
   await getProject();
+  await getSelectedTask(props.taskSelectedID)
+  if(props.method == methodStatus.Update && listProject.value && listProject.value.length){
+    const temp = listProject.value?.find(
+      (item) => item.ProjectID == selectedTask.value?.projectID
+    );
+    if (temp) {
+      selectedProject.value = temp;
+    } else {
+      selectedProject.value = listProject.value[0];
+    }
+    return;
+  }
+  
   if (route.query && route.query.ProjectID) {
     const temp = listProject.value?.find(
       (item) => item.ProjectID == route.query.ProjectID
@@ -329,8 +342,19 @@ onBeforeMount(async () => {
 watch(
   () => props.method,
   () => {
-    if (props.taskSelectedID) {
+    if (props.taskSelectedID && listProject.value && listProject.value.length) {
       getSelectedTask(props.taskSelectedID);
+      if(props.method == methodStatus.Update){
+    const temp = listProject.value?.find(
+      (item) => item.ProjectID == selectedTask.value?.projectID
+    );
+    if (temp) {
+      selectedProject.value = temp;
+    } else {
+      selectedProject.value = listProject.value[0];
+    }
+    return;
+  }
     }
   },
   { immediate: true }
@@ -468,11 +492,11 @@ function onBeforeSave() {
     taskData.value.KanbanId = selectedStatus.value?.KanbanID;
     taskData.value.ProjectId = selectedProject.value?.ProjectID;
     if (selectedAssignee.value) {
-      taskData.value.AssigneeId = selectedAssignee.value.ID;
-      taskData.value.AssigneeEmail = selectedAssignee.value.Email;
-      taskData.value.AssigneeName = selectedAssignee.value.FullName;
-      taskData.value.FinishDate = selectedTask.value.FinishDate;
+      taskData.value.AssigneeId = selectedAssignee.value.id;
+      taskData.value.AssigneeEmail = selectedAssignee.value.email;
+      taskData.value.AssigneeName = selectedAssignee.value.fullName;
     }
+    taskData.value.FinishDate = selectedTask.value.finishDate;
   }
 }
 
@@ -524,9 +548,8 @@ async function saveForm() {
  * @param {*} item
  */
 function onSelectedProject(item) {
-  console.log(item);
   selectedProject.value = item;
-  selectedProject.value.ProjectID = item.projectId;
+  selectedProject.value.ProjectID = item.ProjectID;
   getKanban(selectedProject.value.ProjectID);
 }
 
@@ -535,7 +558,7 @@ function onSelectedProject(item) {
  * @param {} item
  */
 function selectStatus(item) {
-  if (item) {
+  if (item && selectedStatus.value) {
     selectedStatus.value.KanbanID = item.KanbanID;
   }
 }

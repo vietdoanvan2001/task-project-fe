@@ -16,10 +16,10 @@ const currentUser = ref()
 const text = ref("")
 onBeforeMount(()=>{
   currentUser.value = JSON.parse(localStorage.getItem("currentUser"))
-  if(currentUser.deleteType == 1){
+  if(currentUser.value.deleteType == 1){
     text.value = t('AccountDeleted')
   }
-  else if(currentUser.status == 0){
+  else if(currentUser.value.status == 0){
     text.value = t('NoPermissionAlert')
   }
   else{

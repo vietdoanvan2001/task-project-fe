@@ -177,7 +177,7 @@ watch(
     await getProject();
     if (route.query && route.query.ProjectID) {
       const temp = listProject.value?.find(
-        (item) => item.projectId == route.query.ProjectID
+        (item) => item.ProjectID == route.query.ProjectID
       );
       if (temp) {
         selectedProject.value = temp;
@@ -254,6 +254,9 @@ function showProjectSettingSelection() {
  async function getProject() {
   try {
     const currentID = localStorage.getItem("currentUserID");
+    if(!currentID){
+      return
+    }
     const res = await getProjectByUserID(currentID);
     if (res && res.status && res.status == responseStatus.Success && res.data) {
       listProject.value = res.data
@@ -273,12 +276,12 @@ function showProjectSettingSelection() {
       // }
     } else {
       showToast.error(t("Error"));
-      closePopup()
+      // closePopup()
     }
   } catch (error) {
     console.log(error);
     showToast.error(t("Error"));
-    closePopup()
+    // closePopup()
   }
 }
 
