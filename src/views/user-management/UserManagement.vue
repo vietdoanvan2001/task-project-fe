@@ -122,6 +122,7 @@
         :alowUpdate="false"
         :selectionMode="SelectionMode.Multiple"
         :keyExpr:="'id'"
+        :pageSize="13"
         :selectedRowKeysProps="listSelectedUser"
         @onSelectionChanged="onSelectionChanged"
       >
@@ -302,7 +303,7 @@ async function getUsersInTrash() {
 }
 
 async function multipleDelete() {
-  const listID = listSelectedUser.value?.map((item) => item.id);
+  const listID = listSelectedUser.value?.map((item) => item.ID);
   // Xóa hẳn
   if (selectedTab.value == 2) {
     try {
@@ -389,7 +390,6 @@ async function updateStatus(status) {
     console.log(error);
     showToast.error(t("Error"));
   }
-  console.log(listID);
 }
 
 /**

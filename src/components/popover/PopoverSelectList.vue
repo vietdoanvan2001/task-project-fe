@@ -2,14 +2,14 @@
   <div
     class="d-flex align-items-center pointer"
     :id="target"
-    :title="selected?.ColumnName"
+    :title="selected?.Name??selected?.ColumnName"
     @click="
       () => {
         isVisible = true;
       }
     "
   >
-    <div class="status-name line-clamp-1">{{ selected?.ColumnName }}</div>
+    <div class="status-name line-clamp-1">{{ selected?.Name??selected?.ColumnName }}</div>
     <div class="arrow-down-icon mt-px-2 ml-px-8"></div>
   </div>
   <BasePopover
@@ -42,7 +42,7 @@
             @click="selectItem(item)"
           >
             <div class="pr-px-8">
-              {{ item.ColumnName }}
+              {{ item.Name??item?.ColumnName }}
             </div>
             <!-- <div
               class="primary-ticked-icon"

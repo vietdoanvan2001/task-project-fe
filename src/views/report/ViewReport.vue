@@ -110,11 +110,11 @@ onBeforeMount(async () => {
   listData.value =
     listProject.value?.map((item) => ({
       ID: item.ProjectID,
-      ColumnName: item.ProjectName,
+      Name: item.ProjectName,
     })) || [];
   listData.value.unshift({
     ID: -1,
-    ColumnName: t("All"),
+    Name: t("All"),
   });
   selectedItem.value = listData.value[0];
 });

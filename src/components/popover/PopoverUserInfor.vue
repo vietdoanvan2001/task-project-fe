@@ -3,8 +3,8 @@
     class="d-flex align-items-center avatar-32"
     id="avatar"
     :style="
-      user && user.background
-        ? { background: user.background }
+      user && user.Background
+        ? { background: user.Background }
         : { background: 'var(--green-700)' }
     "
     @click="
@@ -33,15 +33,15 @@
         <div
           class="avatar"
           :style="
-            user && user.background
-              ? { background: user.background }
+            user && user.Background
+              ? { background: user.Background }
               : { background: 'var(--green-700)' }
           "
         >
           {{ getAvatar(user).Text }}
         </div>
-        <div class="user-name">{{ user.fullName }}</div>
-        <div class="user-email pb-px-16">{{ user.email }}</div>
+        <div class="user-name">{{ user.FullName }}</div>
+        <div class="user-email pb-px-16">{{ user.Email }}</div>
         <div
           class="funtion-item"
           @click="
@@ -58,7 +58,7 @@
             {{ t("ChangePassword") }}
           </div>
         </div>
-        <div class="funtion-item" @click="onOpenUserManagement">
+        <div class="funtion-item" @click="onOpenUserManagement" v-if="currentUser.positions == 2">
           <div class="icon">
             <div class="user-setting-icon"></div>
           </div>
@@ -129,7 +129,7 @@ import { LanguageOption } from "@/commons/contants/language-option.js";
 import PopupUpdatePassword from "@/components/popup/PopupUpdatePassword.vue";
 
 import { getAvatar } from "@/utils/functions/commonFns.js";
-import { ref } from "vue";
+import { onBeforeMount, ref } from "vue";
 import i18n from "@/plugins/i18n";
 import Users from "@/commons/models/Users";
 import router from "@/router/index.js";
@@ -137,7 +137,11 @@ var { t } = i18n.global;
 const isShowInforPopup = ref(false);
 const isShowLanguageSelection = ref(false);
 const showUpdatePassPopup = ref(false);
+const currentUser = ref()
 
+onBeforeMount(()=>{
+  currentUser.value = JSON.parse(localStorage.getItem("currentUser"))
+})
 const languageSelected = ref({
   ID: 0,
   Name: t("VietnameseVI"),

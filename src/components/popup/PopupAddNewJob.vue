@@ -160,7 +160,7 @@
                   <div
                     class="avatar-32 bold"
                     :style="{
-                      backgroundColor: selectedAssignee.background,
+                      backgroundColor: selectedAssignee.Background??selectedAssignee.background,
                       color: '#ffffff',
                     }"
                     v-else
@@ -173,10 +173,10 @@
                     </div>
                     <div v-else>
                       <div class="bold">
-                        {{ selectedAssignee.fullName }}
+                        {{ selectedAssignee.FullName??selectedAssignee.fullName }}
                       </div>
                       <div>
-                        {{ selectedAssignee.email }}
+                        {{ selectedAssignee.Email??selectedAssignee.email }}
                       </div>
                     </div>
                   </div>
@@ -264,7 +264,7 @@ import PopoverChoseImplementer from "@/components/popover/PopoverChoseImplemente
 import PopoverSelectList from "@/components/popover/PopoverSelectList.vue";
 import PopoverChoseProject from "../popover/PopoverChoseProject.vue";
 import { getAllUsers, getUserById } from "@/apis/user-service/user-service.js";
-import { getAllProject } from "@/apis/project-service/project-service";
+import { getAllProject, getProjectByUserID } from "@/apis/project-service/project-service";
 import { getKanbanByProjectID } from "@/apis/kanban-service/kanban-service.js";
 import { useRoute } from "vue-router";
 import { JobStatus } from "@/commons/contants/job-status.js";
@@ -314,7 +314,7 @@ onBeforeMount(async () => {
   await getProject();
   if (route.query && route.query.ProjectID) {
     const temp = listProject.value?.find(
-      (item) => item.projectId == route.query.ProjectID
+      (item) => item.ProjectID == route.query.ProjectID
     );
     if (temp) {
       selectedProject.value = temp;
@@ -339,8 +339,8 @@ watch(
 watch(
   () => selectedProject.value,
   () => {
-    if (selectedProject.value && selectedProject.value.projectId) {
-      getKanban(selectedProject.value.projectId);
+    if (selectedProject.value && selectedProject.value.ProjectID) {
+      getKanban(selectedProject.value.ProjectID);
     }
   },
   { immediate: true }
@@ -397,7 +397,7 @@ async function showAssigneeSelection() {
 
 async function getAllAssignee() {
   console.log(selectedProject.value);
-  const tempArray = JSON.parse(selectedProject.value.listAssignee);
+  const tempArray = JSON.parse(selectedProject.value.ListAssignee);
   try {
     const result = await getAllUsers();
     if (
@@ -466,12 +466,12 @@ function onBeforeSave() {
   validateForm();
   if (allowSave.value) {
     taskData.value.KanbanId = selectedStatus.value?.KanbanID;
-    taskData.value.ProjectId = selectedProject.value?.projectId;
+    taskData.value.ProjectId = selectedProject.value?.ProjectID;
     if (selectedAssignee.value) {
-      taskData.value.AssigneeId = selectedAssignee.value.id;
-      taskData.value.AssigneeEmail = selectedAssignee.value.email;
-      taskData.value.AssigneeName = selectedAssignee.value.fullName;
-      taskData.value.FinishDate = selectedTask.value.finishDate;
+      taskData.value.AssigneeId = selectedAssignee.value.ID;
+      taskData.value.AssigneeEmail = selectedAssignee.value.Email;
+      taskData.value.AssigneeName = selectedAssignee.value.FullName;
+      taskData.value.FinishDate = selectedTask.value.FinishDate;
     }
   }
 }
@@ -490,6 +490,7 @@ async function saveForm() {
       //Thêm mới
       if (props.method == methodStatus.Add) {
         const res = await addNewTask(taskData.value);
+        console.log(res);
         if (res && res.status && res.status == responseStatus.InsertSuccess) {
           showToast.success(t("AddNewTaskSuccess"));
           saveNewTaskSuccess();
@@ -523,9 +524,10 @@ async function saveForm() {
  * @param {*} item
  */
 function onSelectedProject(item) {
+  console.log(item);
   selectedProject.value = item;
-  selectedProject.value.projectId = item.projectId;
-  getKanban(selectedProject.value.projectId);
+  selectedProject.value.ProjectID = item.projectId;
+  getKanban(selectedProject.value.ProjectID);
 }
 
 /**
@@ -571,15 +573,30 @@ async function getKanban(projectID) {
  */
 async function getProject() {
   try {
-    const res = await getAllProject();
+    const currentID = localStorage.getItem("currentUserID");
+    const res = await getProjectByUserID(currentID);
     if (res && res.status && res.status == responseStatus.Success && res.data) {
-      listProject.value = res.data;
+      listProject.value = []
+      const temp= res.data;
+      temp.forEach((item)=>{
+        const tempAssignee = JSON.parse(item.ListAssignee)
+        const tempIndex = tempAssignee.findIndex((element)=>element.ID == currentID)
+        if(tempAssignee[tempIndex].Role?.ID == 0){
+          listProject.value.push(item)
+        }
+      })
+      if(!listProject.value.length){
+        closePopup()
+        emit("alertNoProject")
+      }
     } else {
       showToast.error(t("Error"));
+      closePopup()
     }
   } catch (error) {
     console.log(error);
     showToast.error(t("Error"));
+    closePopup()
   }
 }
 

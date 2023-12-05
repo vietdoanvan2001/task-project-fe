@@ -137,7 +137,7 @@
               </div>
             </div>
           </div>
-          <div class="row" v-if="method == methodStatus.Add">
+          <div class="row" >
             <div class="row-item">
               <div
                 class="item-label d-flex align-items-center justify-content-between"
@@ -168,15 +168,15 @@
                       <div
                         class="avatar-32 bold"
                         :style="{
-                          backgroundColor: item.background,
+                          backgroundColor: item.background??item.Background,
                           color: '#ffffff',
                         }"
                       >
                         {{ getAvatar(item).Text }}
                       </div>
                       <div class="ml-px-8">
-                        <div class="bold">{{ item.fullName }}</div>
-                        <div>{{ item.email }}</div>
+                        <div class="bold">{{ item.fullName??item.FullName }}</div>
+                        <div>{{ item.email??item.Email }}</div>
                       </div>
                     </div>
                     <div class="d-flex align-items-center">
@@ -185,7 +185,7 @@
                         :title="t('SelectStatus')"
                         :listData="listDataSelect"
                         :selectedItem="
-                          projectData.ListAssigneeClone[index].Role
+                           projectData.ListAssigneeClone[index].Role
                         "
                         :target="`target-${index}`"
                         @onValueChanged="
@@ -361,6 +361,11 @@ watch(
       const arr1 = selectedProject.value.icon?.split("-");
       iconIndex.value = arr1[arr1.length - 1];
       backgroundIndex.value = arr[arr.length - 1];
+      const tempArray = JSON.parse(selectedProject.value.listAssignee)
+      const tempListID = tempArray.map((item)=>item.ID)
+      if(tempListID && tempListID.length){
+        getListUsers(tempListID);
+      }
     }
   },
   { immediate: true }
@@ -373,7 +378,14 @@ async function getListUsers(params) {
   try {
     const res = await getUsersByListID(params);
     if (res && res.status && res.status == responseStatus.Success && res.data) {
-      listAssignee.value = res.data;
+      const temp = res.data;
+      listAssignee.value = []
+      const tempArray = JSON.parse(selectedProject.value.listAssignee)
+      const tempListID = tempArray.map((item)=>item.ID)
+      tempListID.forEach((element)=>{
+        const index = temp.findIndex((item)=>item.ID == element)
+        listAssignee.value.push(temp[index])
+      })
     }
   } catch (error) {
     console.log(error);
@@ -389,6 +401,11 @@ async function getProject(id) {
     const res = await getProjectByID(id);
     if (res && res.status && res.status == responseStatus.Success && res.data) {
       selectedProject.value = res.data;
+      if(selectedProject.value.listAssignee){
+        selectedProject.value.ListAssigneeClone = JSON.parse(selectedProject.value.listAssignee)
+      }
+      projectData.value = selectedProject.value
+      console.log(projectData.value);
     } else {
       showToast.error(t("Error"));
     }
@@ -491,7 +508,7 @@ function beforeSaveForm() {
       "project-background-" + backgroundIndex.value;
     const currentUserID = localStorage.getItem("currentUserID");
     projectData.value.ListAssigneeClone
-      ? projectData.value.ListAssigneeClone.push({
+      ? projectData.value.ListAssigneeClone.unshift({
           ID: currentUserID,
           Role: {
             ID: 0,

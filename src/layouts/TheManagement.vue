@@ -26,6 +26,7 @@
     :taskSelectedID="taskSelectedID"
     @saveNewTaskSuccess="reloadData"
     @onHiddenPopup="closePopupAddNewTask"
+    @alertNoProject="alertNoProject"
   ></PopupAddNewJob>
   <PopupDetailTask
     :isVisible="isShowDetailPopup"
@@ -38,12 +39,25 @@
       }
     "
   ></PopupDetailTask>
+  <PopupNotifyCation
+  :isVisible="showNotifyPopup"
+  :text="t('NoProject')"
+  @confirm="()=>{
+    showNotifyPopup = false
+  }"
+  @onHiddenPopup="()=>{
+    showNotifyPopup = false
+  }"
+  >
+
+  </PopupNotifyCation>
 </template>
 <script setup>
 import TheHeader from "@/views/TheHeader.vue";
 import PopupAddProject from "@/components/popup/PopupAddProject.vue";
+import PopupNotifyCation from "@/components/popup/PopupNotifycation.vue"
 import PopupAddNewJob from "@/components/popup/PopupAddNewJob.vue";
-import { onBeforeMount, ref } from "vue";
+import { onBeforeMount, ref, watch } from "vue";
 import { methodStatus } from "@/commons/contants/method-status";
 import { getUserInfor, isNullOrEmpty } from "@/utils/functions/commonFns.js";
 import PopupDetailTask from "@/components/popup/PopupDetailTask.vue";
@@ -57,6 +71,9 @@ const reloadListProject = ref(false);
 const projectFormMethod = ref(0);
 const taskFormMethod = ref(0);
 const taskSelectedID = ref();
+const showNotifyPopup = ref(false);
+import i18n from "@/plugins/i18n";
+var { t } = i18n.global;
 function onChangedView(string) {
   view.value = string;
 }
@@ -67,10 +84,26 @@ onBeforeMount(async () => {
   const id = localStorage.getItem("currentUserID");
   if (id && !isNullOrEmpty(id)) {
     currentUser.value = await getUserInfor(id);
+    if(currentUser.value.DeleteType == 1|| currentUser.value.Status == 0|| currentUser.value.Status == 2){
+      router.push("/permistion");
+    }
   } else {
     router.push("/login");
   }
 });
+
+watch(()=>currentUser.value.DeleteType,()=>{
+  if(currentUser.value.DeleteType == 1|| currentUser.value.Status == 0|| currentUser.value.Status == 2){
+      router.push("/permistion");
+    }
+},{immediate:true})
+
+/**
+ * Báo chưa có dự án
+ */
+function alertNoProject(){
+  showNotifyPopup.value = true
+}
 
 /**
  * thêm mới dự án thành công

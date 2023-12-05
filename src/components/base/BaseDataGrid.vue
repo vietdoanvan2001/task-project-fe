@@ -128,9 +128,15 @@ const selectedItems = ref([]);
 watch(
   () => props.selectedRowKeysProps,
   () => {
-    if (props.selectedRowKeysProps && props.selectedRowKeysProps.length) {
-      selectedItems.value = [...props.selectedRowKeysProps];
-      console.log(selectedItems.value);
+    if (props.selectedRowKeysProps) {
+      if (props.selectedRowKeysProps.length) {
+        setTimeout(() => {
+          selectedItems.value = [...props.selectedRowKeysProps];
+        }, 100);
+      }
+      else{
+        selectedItems.value = []
+      }
     }
   },
   { immediate: true }

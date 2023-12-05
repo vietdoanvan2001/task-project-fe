@@ -586,8 +586,13 @@ function getName(string) {
   cursor: pointer;
 }
 
-// .dx-sortable {
-//   display: block;
-//   height: calc(100vh - 56px);
+.dx-sortable {
+  display: block;
+  height: calc(100vh - 56px);
+}
+
+// .scrollable-list {
+//   height: calc(100vh - 112px);
+//   overflow: auto;
 // }
 </style>

@@ -158,6 +158,12 @@
     "Project":"Dự án/nhóm",
     "TaskAmount":"Số lượng công việc",
     "NeedToDoJobList":"Danh sách công việc cần làm",
-    "TodayTaskAmount":"Số lượng công việc hôm nay"
-
+    "TodayTaskAmount":"Số lượng công việc hôm nay",
+    "NoPermissionAlert":"Tài khoản của bạn chưa được duyệt vào hệ thống.",
+    "AccountDeleted":"Tài khoản của bạn hiện đang không thuộc hệ thống.",
+    "ContactAdmin":"Vui lòng liên hệ với quản trị viên để được giải đáp!",
+    "InActiveAccount":"Tài khoản của bạn hiện đang bị dừng hoạt động.",
+    "NotifyCation":"Thông báo",
+    "NoProject":"Bạn đang chưa thuộc dự án/nhóm nào!",
+    "Agree":"Đồng ý"
 }
