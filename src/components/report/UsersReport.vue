@@ -87,7 +87,6 @@ watch(
 watch(
   () => props.reloadListProject,
   async () => {
-    console.log(132);
     if (!props.selectedProject || !props.selectedProject.ID) {
       return;
     }
@@ -184,7 +183,12 @@ async function getProject(id) {
  */
 async function getData() {
   try {
-    const res = await GetUsersAmountTask(props.selectedProject.ID);
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"))
+    const param = {
+      projectID: props.selectedProject.ID,
+      userID: currentUser?.id
+    }
+    const res = await GetUsersAmountTask(param);
     if (res && res.status && res.status == responseStatus.Success && res.data) {
       taskAmount.value = res.data;
     } else {

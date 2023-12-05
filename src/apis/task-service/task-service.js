@@ -25,14 +25,14 @@ export async function getTaskByID(id){
     return await axios.getAxios(endpoint)
 }
 
-export async function getTaskType(projectID){
-    const endpoint = endPoint.TASK_GETTASKTYPE+"/"+projectID
-    return await axios.getAxios(endpoint)
+export async function getTaskType(param){
+    const endpoint = endPoint.TASK_GETTASKTYPE;
+    return await axios.getAxios(endpoint,param)
 }
 
-export async function GetUsersAmountTask(projectID){
-    const endpoint = endPoint.TASK_GETUSERAMOUNTTASK+"/"+projectID
-    return await axios.getAxios(endpoint)
+export async function GetUsersAmountTask(param){
+    const endpoint = endPoint.TASK_GETUSERAMOUNTTASK
+    return await axios.getAxios(endpoint,param)
 }
 
 //Post API

@@ -38,12 +38,7 @@
       >
         {{ t("NoneProject") }}
       </div>
-      <!-- <div
-        :style="{ color: '#ffffff', margin: '24px', cursor: 'pointer' }"
-        @click="openTask(12, 2)"
-      >
-        Công việc Fake
-      </div> -->
+
     </div>
     <div class="content">
       <div class="report-main">
@@ -73,7 +68,7 @@
             </div>
           </div>
         </div>
-        <div class="ml-px-12 mt-px-2">
+        <div class="ml-px-12 mt-px-2" v-if="needToDoTask.length">
           <div class="white-color bold pb-px-8 pl-px-12">
             {{ t("NeedToDoJobList") }}
           </div>
@@ -154,6 +149,7 @@
                     >
                       {{ getName(task?.assigneeName) }}
                     </div>
+
                     <div class="task-deadline">
                       <div
                         class="mr-px-8"
@@ -204,8 +200,8 @@
       <div class="quotations">
         <div>
           {{ t("Hello") }}
-          <span class="bold" v-if="currentUser && currentUser.fullName">{{
-            currentUser.fullName
+          <span class="bold" v-if="currentUser && currentUser.FullName">{{
+            currentUser.FullName
           }}</span>
         </div>
         <div class="current-time">
@@ -385,7 +381,12 @@ function searchProject(keyWord) {
  */
 async function getTask(projectID) {
   try {
-    const res = await getTaskType(projectID);
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"))
+    const param = {
+      projectID: projectID,
+      userID: currentUser?.id
+    }
+    const res = await getTaskType(param);
     if (res && res.status && res.data && res.status == responseStatus.Success) {
       needToDoTask.value = [];
       outOfDateTask.value = [...res.data.OutOfDate];

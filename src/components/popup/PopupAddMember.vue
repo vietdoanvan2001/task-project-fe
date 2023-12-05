@@ -187,10 +187,16 @@ watch(
   () => props.listSelected,
   () => {
     if (props.listSelected) {
-      listSelectedData.value = [...props.listSelected];
-      listSelectedID.value = listSelectedData.value.map((item) => item.id);
-      console.log(listSelectedData.value);
-      console.log(listSelectedID.value);
+      listSelectedID.value=[]
+      if(!props.listSelected){
+        listSelectedData.value = []
+      }
+      else{
+        listSelectedData.value = [...props.listSelected];
+      }
+      listSelectedData.value.forEach(element => {
+        listSelectedID.value.push(element.ID)
+      });
     }
   },
   { immediate: true }
@@ -249,8 +255,6 @@ function unSelectedAll() {
  * Khởi tạo
  */
 function onContentReady() {
-  console.log(listSelectedData.value);
-  console.log(listSelectedID.value);
 }
 
 /**

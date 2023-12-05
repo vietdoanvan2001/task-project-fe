@@ -7,7 +7,7 @@
         :inner-radius="0.7"
         type="doughnut"
         :palette="customColors"
-        diameter="0.7"
+        diameter="0.8"
         :width="600"
         :height="250"
         startAngle="90"
@@ -69,7 +69,7 @@
       <BaseDataGrid
         :dataSource="selectedGrid.Data"
         :columns="TaskSubColumnDefault"
-        :pageSize="5"
+        :pageSize="9"
         @onRowClick="selectedRow"
       >
         <template v-slot:StartDateTemplate="{ data }">
@@ -248,7 +248,12 @@ function selectGrid(item) {
  */
 async function getTask(projectID) {
   try {
-    const res = await getTaskType(projectID);
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"))
+    const param = {
+      projectID: projectID,
+      userID: currentUser?.id
+    }
+    const res = await getTaskType(param);
     if (res && res.status && res.data && res.status == responseStatus.Success) {
       doneTask.value = [...res.data.Done];
       dueSoonTask.value = [...res.data.DueSoon];
@@ -340,7 +345,6 @@ async function getTask(projectID) {
 }
 
 function selectedRow(event) {
-  console.log(event.data.taskID);
   if (event && event.data && event.data.taskID) {
     taskSelectedID.value = event.data.taskID;
     isShowDetailPopup.value = true;

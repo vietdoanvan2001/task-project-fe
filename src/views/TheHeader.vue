@@ -117,6 +117,7 @@ import PopupConfirmDelete from "@/components/popup/PopupConfirmDelete.vue";
 import { useRoute } from "vue-router";
 import {
   getAllProject,
+  getProjectByUserID,
   deleteProjectByID,
 } from "@/apis/project-service/project-service";
 import { showToast } from "@/utils/toast-message/toastMessage";
@@ -226,7 +227,7 @@ function onSelectSettingItem(item) {
  */
 async function DeleteProject() {
   try {
-    const res = await deleteProjectByID(selectedProject.value.projectId);
+    const res = await deleteProjectByID(selectedProject.value.ProjectID);
     if (res && res.status && res.status == responseStatus.Success) {
       showToast.success(t("DeleteProjectSuccess"));
       backToHome();
@@ -250,17 +251,34 @@ function showProjectSettingSelection() {
 /**
  * Lấy toàn bộ phòng ban
  */
-async function getProject() {
+ async function getProject() {
   try {
-    const res = await getAllProject();
+    const currentID = localStorage.getItem("currentUserID");
+    const res = await getProjectByUserID(currentID);
     if (res && res.status && res.status == responseStatus.Success && res.data) {
-      listProject.value = res.data;
+      listProject.value = res.data
+      // listProject.value = []
+      // const temp= res.data;
+      // temp.forEach((item)=>{
+      //   const tempAssignee = JSON.parse(item.ListAssignee)
+      //   const tempIndex = tempAssignee.findIndex((element)=>element.ID == currentID)
+      //   console.log(tempAssignee[tempIndex].Role);
+      //   if(tempAssignee[tempIndex].Role?.ID == 0){
+      //     listProject.value.push(item)
+      //   }
+      // })
+      // if(!listProject.value.length){
+      //   closePopup()
+      //   emit("alertNoProject")
+      // }
     } else {
       showToast.error(t("Error"));
+      closePopup()
     }
   } catch (error) {
     console.log(error);
     showToast.error(t("Error"));
+    closePopup()
   }
 }
 
@@ -286,7 +304,7 @@ function onSelectedProject(event) {
     path: "/project",
     query: {
       Type: selectedTab.value,
-      ProjectID: event.projectId,
+      ProjectID: event.ProjectID,
     },
   });
 }

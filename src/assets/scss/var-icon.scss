@@ -13,6 +13,15 @@ $icon-project: url('../images/icon_project.svg');
     $link-icon-v2
 );
 
+//Icon Error
+@include setIconWithDefaultColor(
+    big-icon-false,
+    36px,
+    36px,
+    -752px, -462px,
+    $link-icon-v2
+);
+
 //App icon
 @include setIconWithDefaultColor(
     app-icon,

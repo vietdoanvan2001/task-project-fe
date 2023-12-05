@@ -83,7 +83,8 @@ export function getRandomColor(){
 export function getAvatar(user){
   const background = getRandomColor();
   if(user){
-    const name = user.fullName?.toUpperCase().trim().split(" ")
+    const tempName = user.FullName?user.FullName:user.fullName
+    const name = tempName?.toUpperCase().trim().split(" ")
     if(!name){
       return {
         Text: 'undefined',
@@ -140,7 +141,7 @@ export function formatDate(inputDate) {
   const date = new Date(inputDate);
   
   const day = (date.getDate()).toString().padStart(2, '0');
-  const month = (date.getMonth()).toString().padStart(2, '0');
+  const month = (date.getMonth()+1).toString().padStart(2, '0');
   const year = date.getFullYear();
 
   const formattedDate = `${day}/${month}/${year}`;

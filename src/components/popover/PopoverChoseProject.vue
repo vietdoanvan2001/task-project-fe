@@ -2,21 +2,21 @@
   <div
     class="d-flex align-items-center pointer"
     :id="target"
-    :title="selectedItem.projectName"
+    :title="selectedItem.projectName??selectedItem.ProjectName"
     @click="
       () => {
         isVisible = true;
       }
     "
   >
-    <div class="mr-px-8 item-background" :class="selectedItem.background">
-      <div :class="selectedItem.icon"></div>
+    <div class="mr-px-8 item-background" :class="selectedItem.background??selectedItem.Background">
+      <div :class="selectedItem.icon??selectedItem.Icon"></div>
     </div>
     <div
       class="project-name"
       :style="maxWidthText ? { maxWidth: `${maxWidthText}px` } : {}"
     >
-      {{ selectedItem.projectName }}
+      {{ selectedItem.projectName??selectedItem.ProjectName }}
     </div>
     <div class="arrow-down-icon mt-px-2 ml-px-8"></div>
   </div>
@@ -44,14 +44,14 @@
           v-for="(item, index) in listDataClone"
           :key="index"
           class="selected-item"
-          :title="item.projectName"
+          :title="item.projectName??item.ProjectName"
           @click="selectItem(item)"
         >
-          <div class="item-background" :class="item.background">
-            <div :class="item.icon"></div>
+          <div class="item-background" :class="item.background??item.Background">
+            <div :class="item.icon??item.Icon"></div>
           </div>
           <div class="item-text">
-            {{ item.projectName }}
+            {{ item.projectName??item.ProjectName }}
           </div>
         </div>
         <div class="no-data-project" v-if="!listDataClone.length">
@@ -81,15 +81,16 @@ const isVisible = ref(false);
 const listDataClone = ref(Array < Project > []);
 const selectedItem = ref(new Project());
 
-watch(
-  () => props.selectedItem,
-  () => {
-    if (props.selectedItem) {
-      selectedItem.value = props.selectedItem;
-    }
-  },
-  { immediate: true }
-);
+// watch(
+//   () => props.selectedItem,
+//   () => {
+//     console.log(props.selectedItem);
+//     if (props.selectedItem) {
+//       selectedItem.value = props.selectedItem;
+//     }
+//   },
+//   { immediate: true }
+// );
 
 watch(
   () => props.dataSource,
@@ -101,6 +102,7 @@ watch(
 onBeforeMount(() => {
   if (props.dataSource) {
     listDataClone.value = [...props.dataSource];
+    selectedItem.value = props.selectedItem;
   }
 });
 
@@ -129,6 +131,7 @@ function searchProject(keyWord) {
  * @param {*} item
  */
 function selectItem(item) {
+  console.log(item);
   selectedItem.value = item;
   onHidden();
   emit("onSelectedItem", selectedItem.value);
