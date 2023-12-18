@@ -3,7 +3,7 @@
     <div class="login-content">
       <div class="login-header">
         <div class="app-logo"></div>
-        <div class="title pl-px-8">{{ t("AppName") }}</div>
+        <div class="title pl-px-12">{{ t("Login") }}</div>
       </div>
       <div class="error-area" v-if="showErrorArea">
         <div class="icon-false"></div>
@@ -186,9 +186,9 @@ async function onClickLogin() {
       justify-content: center;
       margin-bottom: 36px;
       .app-logo {
-        background: url("../assets/images/ICON1.svg") no-repeat -1232px -1015px;
-        width: 44px;
-        height: 45px;
+        background: url("../assets/images/ICON.svg") no-repeat -40px -488px;
+        width: 48px;
+        height: 48px;
       }
     }
   }

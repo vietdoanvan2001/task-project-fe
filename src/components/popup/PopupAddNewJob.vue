@@ -312,8 +312,8 @@ const emit = defineEmits();
 onBeforeMount(async () => {
   selectedStatus.value = listStatus.value[0];
   await getProject();
-  await getSelectedTask(props.taskSelectedID)
   if(props.method == methodStatus.Update && listProject.value && listProject.value.length){
+    await getSelectedTask(props.taskSelectedID)
     const temp = listProject.value?.find(
       (item) => item.ProjectID == selectedTask.value?.projectID
     );

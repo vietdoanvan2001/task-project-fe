@@ -232,18 +232,29 @@
       <div
         class="d-flex align-items-center pointer pl-px-12 error-color"
         :style="{ height: '36px' }"
-        @click="deleteKanban"
+        @click="showConfirmDeleteKanban"
       >
         {{ t("DeleteKanban") }}
       </div>
     </template>
   </BasePopover>
+  <PopupConfirmDelete
+    :text="t('DeleteKanbanConfirm')"
+    :isVisible="isShowDeleteConfirm"
+    @confirmDelete="deleteKanban"
+    @onHiddenPopup="
+      () => {
+        isShowDeleteConfirm = false;
+      }
+    "
+  ></PopupConfirmDelete>
 </template>
 <script setup>
 import { DxScrollView } from "devextreme-vue/scroll-view";
 import { DxSortable, DxRowDragging } from "devextreme-vue/sortable";
 import BasePopover from "./BasePopover.vue";
 import BaseTextbox from "./BaseTextbox.vue";
+import PopupConfirmDelete from "@/components/popup/PopupConfirmDelete.vue";
 import { onBeforeMount, ref, watch } from "vue";
 import {
   getRandomColor,
@@ -266,6 +277,7 @@ import { responseStatus } from "@/commons/enums/api-response-status";
 var { t } = i18n.global;
 const idKanban = ref("");
 const isShowKanbanSetting = ref(false);
+const isShowDeleteConfirm = ref(false)
 const props = defineProps({
   data: Array,
   column: Array,
@@ -312,6 +324,12 @@ function openKanbanSetting(index) {
   isShowKanbanSetting.value = true;
 }
 
+function showConfirmDeleteKanban(){
+  isShowDeleteConfirm.value = true;
+  isShowKanbanSetting.value = false;
+
+}
+
 /**
  * Xóa cột
  */
@@ -331,6 +349,7 @@ async function deleteKanban() {
     showToast.error(t("Error"));
   }
   isShowKanbanSetting.value = false;
+  isShowDeleteConfirm.value = false;
 }
 
 /**
