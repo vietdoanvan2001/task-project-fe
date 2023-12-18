@@ -303,11 +303,12 @@ async function getUsersInTrash() {
 }
 
 async function multipleDelete() {
-  const listID = listSelectedUser.value?.map((item) => item.ID);
+  const listID = listSelectedUser.value?.map((item) => item.id);
+  const listID2 = listSelectedUser.value?.map((item) => item.ID);
   // Xóa hẳn
   if (selectedTab.value == 2) {
     try {
-      const res = await deleteByListID(listID);
+      const res = listID[0]? await deleteByListID(listID): await deleteByListID(listID2);
       if (res && res.status && res.status == responseStatus.Success) {
         listSelectedUser.value = [];
         showToast.success(t("DeleteSucess"));

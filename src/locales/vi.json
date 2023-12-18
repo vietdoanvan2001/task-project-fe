@@ -165,5 +165,6 @@
     "InActiveAccount":"Tài khoản của bạn hiện đang bị dừng hoạt động.",
     "NotifyCation":"Thông báo",
     "NoProject":"Bạn đang chưa thuộc dự án/nhóm nào!",
-    "Agree":"Đồng ý"
+    "Agree":"Đồng ý",
+    "DeleteKanbanConfirm":"Bạn có chắc muốn xoá nhóm công việc không?"
 }

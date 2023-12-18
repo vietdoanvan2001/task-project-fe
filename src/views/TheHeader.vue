@@ -33,7 +33,7 @@
         <PopoverChoseProject
           :width="300"
           :target="'theHeader'"
-          :maxWidthText="120"
+          :maxWidthText="300"
           :dataSource="listProject"
           :selectedItem="selectedProject"
           @onSelectedItem="onSelectedProject"
